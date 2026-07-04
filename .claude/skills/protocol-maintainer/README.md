@@ -13,6 +13,7 @@ CodeY Agent Protocol 是基于 JSON-RPC 2.0 的通信协议，用于 Claude Code
 | 传输格式 | JSON-RPC 2.0 |
 | 通信模式 | Request / Response + Notification |
 | 字符编码 | UTF-8 |
+| 最大消息大小 | 4MB |
 
 ### JSON-RPC 2.0 基础结构
 
@@ -61,7 +62,7 @@ Agent 方法用于管理 Agent 生命周期和通信。
 | [agent/stop](./dictionary/agent-methods.md#agentstop) | Request | 停止 Agent 实例 |
 | [agent/send](./dictionary/agent-methods.md#agentsend) | Request | 发送用户消息 |
 | [agent/cancel](./dictionary/agent-methods.md#agentcancel) | Request | 取消当前操作 |
-| [agent/response](./dictionary/agent-methods.md#agentresponse) | Notification | Agent 回复消息 |
+| [agent/response](./dictionary/agent-methods.md#agentresponse) | Notification | Agent 回复消息（支持流式） |
 | [agent/tool_call](./dictionary/agent-methods.md#agenttool_call) | Notification | Agent 请求工具调用 |
 | [agent/tool_result](./dictionary/agent-methods.md#agenttool_result) | Notification | 工具执行结果返回 |
 | [agent/error](./dictionary/agent-methods.md#agenterror) | Notification | Agent 错误通知 |
@@ -89,6 +90,7 @@ Shell 方法用于执行命令行操作。
 | [shell/execute](./dictionary/shell-methods.md#shellexecute) | Request | 执行 Shell 命令 |
 | [shell/output](./dictionary/shell-methods.md#shelloutput) | Notification | 进程输出流 |
 | [shell/exit](./dictionary/shell-methods.md#shellexit) | Notification | 进程退出通知 |
+| [shell/kill](./dictionary/shell-methods.md#shellkill) | Request | 终止进程 |
 
 ### Permission 方法
 
@@ -116,15 +118,69 @@ Permission 方法用于权限管理。
 
 ### CodeY 扩展错误码
 
-| 错误码 | 名称 | 说明 |
-|--------|------|------|
-| -32000 | Agent Error | Agent 运行时错误 |
-| -32001 | Permission Denied | 权限不足 |
-| -32002 | Tool Error | 工具执行失败 |
-| -32003 | LLM Error | LLM 调用失败 |
-| -32004 | Timeout | 操作超时 |
+| 错误码 | 名称 | 说明 | retryable |
+|--------|------|------|-----------|
+| -32000 | Agent Error | Agent 运行时错误 | false |
+| -32001 | Permission Denied | 权限不足 | false |
+| -32002 | Tool Error | 工具执行失败 | 视情况 |
+| -32003 | LLM Error | LLM 调用失败 | true |
+| -32004 | Timeout | 操作超时 | true |
+| -32005 | Rate Limit Exceeded | 请求频率超限 | true |
+| -32006 | Resource Exhausted | 资源耗尽 | false |
+| -32007 | State Conflict | 状态冲突 | false |
+| -32008 | Validation Error | 数据验证失败 | false |
+| -32009 | Transport Error | 传输层错误 | true |
 
-详细错误码信息请参考 [error-codes.md](./dictionary/error-codes.md)。
+详细错误码信息请参考：
+- [error-codes.md](./dictionary/error-codes.md) - 错误码速查
+- [error-handling/error-codes.md](./error-handling/error-codes.md) - 完整错误码定义（Phase 1）
+- [error-handling/recovery.md](./error-handling/recovery.md) - 错误恢复机制
+
+---
+
+## 传输层
+
+Phase 1 支持 4 种传输方式：
+
+### Tauri IPC
+
+用于桌面应用内部通信（Frontend WebView <-> Backend Rust）。
+
+详见 [transport/tauri-ipc.md](./transport/tauri-ipc.md)
+
+### WebSocket
+
+用于 Web 端双向实时通信，支持全双工。
+
+详见 [transport/websocket.md](./transport/websocket.md)
+
+### HTTP POST
+
+用于请求/响应模式的简单操作。
+
+详见 [transport/http-post.md](./transport/http-post.md)
+
+### SSE
+
+用于服务端单向流式推送。
+
+详见 [transport/sse.md](./transport/sse.md)
+
+---
+
+## 流式支持
+
+### SSE 流式
+
+用于 Agent 响应和 Shell 输出的实时推送。
+
+详见 [streaming/sse-streaming.md](./streaming/sse-streaming.md)
+
+### WebSocket 流式
+
+用于需要双向实时通信的流式场景。
+
+详见 [streaming/websocket-streaming.md](./streaming/websocket-streaming.md)
 
 ---
 
@@ -238,15 +294,6 @@ Permission 方法用于权限管理。
 3. 在错误码参考中添加条目
 4. 递增 PATCH 版本号
 
-### 自定义扩展命名空间
-
-第三方扩展使用厂商前缀避免冲突：
-
-```
-vendor/method    # 第三方扩展，如 "acme/db-query"
-internal/method  # 内部实验性方法
-```
-
 ---
 
 ## 变更日志
@@ -256,10 +303,13 @@ internal/method  # 内部实验性方法
 - 初始版本
 - 定义 Agent 方法族（10 个 method）
 - 定义 File 方法族（5 个 method）
-- 定义 Shell 方法族（3 个 method）
+- 定义 Shell 方法族（4 个 method）
 - 定义 Permission 方法族（3 个 method）
-- 定义 10 个错误码（5 个标准 + 5 个扩展）
+- 定义 15 个错误码（5 个标准 + 10 个扩展）
 - 支持 JSON-RPC 2.0 Request/Response 和 Notification 模式
+- 支持 4 种传输方式：Tauri IPC、WebSocket、HTTP POST、SSE
+- 支持 SSE 和 WebSocket 流式传输
+- 定义错误恢复机制（自动重试、降级策略、状态恢复）
 
 ---
 
