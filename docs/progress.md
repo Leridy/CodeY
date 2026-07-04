@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05
+> 最后更新：2026-07-05 (沙箱系统完成)
 
 ## 当前任务
 
-- [ ] 权限系统实现 (Phase 2.2)
+- [ ] 确定下一步任务 (Phase 2.4)
 
 ## 维护任务
 
@@ -51,6 +51,24 @@
 - [x] Phase 1 问题修复 (2026-07-05)
 - [x] LLM 提供商维护 skill (2026-07-05)
 - [x] Phase 2.1 LLM 集成实现 (2026-07-05)
+- [x] Phase 2.2 权限系统实现 (2026-07-05)
+- [x] Phase 2.3 沙箱系统实现 (2026-07-05)
+
+## Phase 2.3 沙箱系统实现 ✅
+- [x] 实现 SandboxManager trait，支持 macOS Seatbelt 和 Linux bubblewrap
+- [x] 实现 SandboxConfig、NetworkPolicy、ResourceLimits 配置类型
+- [x] 实现路径遍历检测加固（使用 canonicalize）
+- [x] 实现真正的超时中断（使用 tokio::time::timeout）
+- [x] 实现策略文件生成转义（防止注入攻击）
+- [x] 添加 20 个测试用例，全部通过
+- [x] 生成 Windows 沙箱分析博客和研究文档
+
+## Phase 2.2 权限系统实现 ✅
+- [x] 实现 7 级权限模型 (ReadOnly → FullAccess)
+- [x] 实现规则引擎，支持 DSL 语法解析
+- [x] 实现沙箱管理器，支持路径验证
+- [x] 添加 28 个测试用例
+- [x] 修复安全问题: 默认权限级别从 FullAccess 改为 ReadOnly
 
 ## Skill 创建状态
 
@@ -89,7 +107,7 @@
 | M1: 基础架构 | Week 2 | ✅ 完成 | 项目结构、配置文件 |
 | M2: 核心协议 | Week 4 | ✅ 完成 | JSON-RPC 实现 |
 | M3: Agent 核心 | Week 8 | 🔄 进行中 | Agent Loop、工具系统 |
-| M4: 权限系统 | Week 10 | ⏳ 待开始 | 权限引擎、规则引擎 |
+| M4: 权限系统 | Week 10 | ✅ 完成 | 权限引擎、规则引擎 |
 | M5: 工具实现 | Week 14 | ⏳ 待开始 | 所有工具完成 |
 | M6: 前端 UI | Week 18 | ⏳ 待开始 | IDE 布局、组件 |
 | M7: 集成测试 | Week 20 | ⏳ 待开始 | E2E 测试、性能测试 |

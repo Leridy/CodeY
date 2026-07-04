@@ -252,6 +252,8 @@ cat docs/progress.md
 ├── codey-frontend-style/     # 前端风格 + 设计系统
 ├── codey-testing-standards/  # 测试标准（前端/后端）
 ├── doc-maintainer/           # 文档维护
+├── github-integration/       # GitHub 集成（Issue/PR 管理）
+├── llm-provider-maintenance/ # LLM 提供商维护
 └── protocol-maintainer/      # 协议维护
 ```
 
@@ -290,3 +292,5 @@ cat .claude/skills/<skill-name>/<subdir>/<file>.md
 | 编写测试 | `codey-testing-standards` |
 | 代码审查 | `codey-dev-workflow/agents/review-agent.md` |
 | 更新进度 | `docs/progress.md` |
+| GitHub 操作 | `github-integration` |
+| LLM 提供商管理 | `llm-provider-maintenance` |

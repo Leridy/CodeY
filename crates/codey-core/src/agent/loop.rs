@@ -1,9 +1,8 @@
 use anyhow::Result;
 use crate::tools::ToolRegistry;
-use crate::permission::PermissionEngine;
+use crate::permission::{PermissionEngine, PermissionLevel};
 
 /// Main agent loop that orchestrates LLM calls and tool execution
-#[allow(dead_code)]
 pub struct AgentLoop {
     tool_registry: ToolRegistry,
     permission_engine: PermissionEngine,
@@ -13,7 +12,7 @@ impl AgentLoop {
     pub fn new() -> Self {
         Self {
             tool_registry: ToolRegistry::new(),
-            permission_engine: PermissionEngine::new(),
+            permission_engine: PermissionEngine::new(PermissionLevel::ReadOnly),
         }
     }
 
@@ -23,6 +22,6 @@ impl AgentLoop {
         // 1. Send message to LLM
         // 2. Process tool calls
         // 3. Return response
-        Ok(format!("Processed: {}", message))
+        anyhow::bail!("AgentLoop::process_message 尚未实现")
     }
 }
