@@ -163,6 +163,14 @@ impl LlmProvider for AnthropicProvider {
     }
 
     async fn chat(&self, request: ChatRequest) -> Result<ChatResponse> {
+        if request.tools.as_ref().is_some_and(|t| !t.is_empty()) {
+            tracing::warn!(
+                provider = "anthropic",
+                tool_count = request.tools.as_ref().map_or(0, |t| t.len()),
+                "Tools parameter provided but Anthropic tool use is not yet implemented; tools will be ignored"
+            );
+        }
+
         let url = format!("{}/v1/messages", self.base_url);
 
         let anthropic_request = AnthropicChatRequest {
@@ -215,6 +223,14 @@ impl LlmProvider for AnthropicProvider {
     }
 
     async fn stream_chat(&self, request: ChatRequest) -> Result<ChatStream> {
+        if request.tools.as_ref().is_some_and(|t| !t.is_empty()) {
+            tracing::warn!(
+                provider = "anthropic",
+                tool_count = request.tools.as_ref().map_or(0, |t| t.len()),
+                "Tools parameter provided but Anthropic tool use is not yet implemented; tools will be ignored"
+            );
+        }
+
         let url = format!("{}/v1/messages", self.base_url);
 
         let anthropic_request = AnthropicChatRequest {

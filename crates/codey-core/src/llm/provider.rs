@@ -55,6 +55,9 @@ pub struct ChatRequest {
     pub messages: Vec<Message>,
     pub temperature: Option<f32>,
     pub max_tokens: Option<u32>,
+    /// Streaming is determined by calling `chat()` vs `stream_chat()`.
+    /// This field exists for serialization/deserialization compatibility
+    /// with API wire formats that include a `stream` flag.
     pub stream: bool,
     pub tools: Option<Vec<Tool>>,
 }

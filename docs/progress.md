@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (沙箱系统完成)
+> 最后更新：2026-07-05 (LLM Provider Spec 补齐)
 
 ## 当前任务
 
-- [ ] 确定下一步任务 (Phase 2.4)
+- [ ] 确定下一步任务 (Phase 2.5)
 
 ## 维护任务
 
@@ -16,6 +16,7 @@
 
 ## 已完成任务
 
+- [x] Phase 2.1 LLM Provider Spec 补齐 (2026-07-05)
 - [x] 需求收集与头脑风暴 (2026-07-05)
 - [x] 技术架构设计 (2026-07-05)
 - [x] 协议设计 (2026-07-05)
@@ -53,6 +54,27 @@
 - [x] Phase 2.1 LLM 集成实现 (2026-07-05)
 - [x] Phase 2.2 权限系统实现 (2026-07-05)
 - [x] Phase 2.3 沙箱系统实现 (2026-07-05)
+- [x] Phase 2.4 Agent Loop 实现 (2026-07-05)
+
+## Phase 2.1 LLM Provider Spec 补齐 ✅
+- [x] 补齐 design.md 设计文档
+- [x] 补齐 api.md API 文档
+- [x] 补齐 test.md 测试文档
+- [x] 修复 CRITICAL: API Key 空值验证
+- [x] 修复 HIGH: ChatRequest.stream 字段注释
+- [x] 修复 HIGH: models 表注释说明
+- [x] 修复 HIGH: ProviderConfig 字段注释说明
+- [x] 修复 MEDIUM: Anthropic 静默忽略 tools 警告日志
+- [x] 75 个测试全部通过
+
+## Phase 2.4 Agent Loop 实现 ✅
+- [x] 实现核心类型：AgentLoopConfig、AgentResponse、ExecutedToolCall、ToolExecutionResult
+- [x] 增强 Context：支持 tool_calls、to_llm_messages()、add_tool_result()
+- [x] 实现 StreamManager：流式响应管理器，支持内容增量和工具调用事件
+- [x] 实现工具适配器：FunctionCallingAdapter (OpenAI)、ToolUseAdapter (Anthropic)、ToolCallAdapterFactory
+- [x] 重写 AgentLoop 主循环：run()、process_message()、handle_tool_call()
+- [x] 添加 89 个测试用例（agent 模块 69 个 + adapters 20 个），全部通过
+- [x] 总测试套件 284 个测试全部通过
 
 ## Phase 2.3 沙箱系统实现 ✅
 - [x] 实现 SandboxManager trait，支持 macOS Seatbelt 和 Linux bubblewrap
@@ -106,7 +128,7 @@
 |--------|---------|------|------|
 | M1: 基础架构 | Week 2 | ✅ 完成 | 项目结构、配置文件 |
 | M2: 核心协议 | Week 4 | ✅ 完成 | JSON-RPC 实现 |
-| M3: Agent 核心 | Week 8 | 🔄 进行中 | Agent Loop、工具系统 |
+| M3: Agent 核心 | Week 8 | ✅ 完成 | Agent Loop、工具系统 |
 | M4: 权限系统 | Week 10 | ✅ 完成 | 权限引擎、规则引擎 |
 | M5: 工具实现 | Week 14 | ⏳ 待开始 | 所有工具完成 |
 | M6: 前端 UI | Week 18 | ⏳ 待开始 | IDE 布局、组件 |

@@ -77,25 +77,38 @@ impl DbProviderLoader {
     ) {
         for config in configs {
             let api_key = match &config.api_key_env {
-                Some(var_name) => {
-                    std::env::var(var_name).unwrap_or_else(|_| {
+                Some(var_name) => match std::env::var(var_name) {
+                    Ok(key) if !key.is_empty() => key,
+                    Ok(_) => {
                         tracing::warn!(
                             provider = %config.id,
                             env_var = %var_name,
-                            "Environment variable not set for provider"
+                            "Environment variable is empty for provider; skipping registration"
                         );
-                        String::new()
-                    })
-                }
+                        continue;
+                    }
+                    Err(_) => {
+                        tracing::warn!(
+                            provider = %config.id,
+                            env_var = %var_name,
+                            "Environment variable not set for provider; skipping registration"
+                        );
+                        continue;
+                    }
+                },
                 None => {
                     tracing::warn!(
                         provider = %config.id,
-                        "No env_var configured for provider"
+                        "No env_var configured for provider; skipping registration"
                     );
-                    String::new()
+                    continue;
                 }
             };
 
+            // NOTE: This is a simplified registration path. Config fields like
+            // `chat_endpoint`, `default_model`, `supports_streaming`, etc. are not
+            // forwarded to the provider constructors. Each built-in provider uses
+            // its own defaults. A future factory pattern could pass these through.
             let provider: Option<Box<dyn LlmProvider>> = match config.id.as_str() {
                 "openai" => Some(Box::new(OpenAiProvider::new(api_key))),
                 "anthropic" => Some(Box::new(AnthropicProvider::new(api_key))),
@@ -165,6 +178,8 @@ impl DbProviderLoader {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            -- Reserved for future use: model metadata caching and discovery.
+            -- Currently providers return models programmatically via `models()`.
             CREATE TABLE IF NOT EXISTS models (
                 id TEXT PRIMARY KEY,
                 provider_id TEXT NOT NULL,
@@ -198,9 +213,9 @@ mod tests {
 
     fn insert_provider(conn: &Connection, id: &str, name: &str, base_url: &str) {
         conn.execute(
-            "INSERT INTO providers (id, name, base_url, chat_endpoint, default_model) \
-             VALUES (?1, ?2, ?3, '/chat/completions', 'gpt-4')",
-            rusqlite::params![id, name, base_url],
+            "INSERT INTO providers (id, name, base_url, api_key_env, chat_endpoint, default_model) \
+             VALUES (?1, ?2, ?3, ?4, '/chat/completions', 'gpt-4')",
+            rusqlite::params![id, name, base_url, format!("TEST_{}_API_KEY", id.to_uppercase())],
         )
         .unwrap();
     }
@@ -245,6 +260,13 @@ mod tests {
         insert_provider(&conn, "ollama", "Ollama", "http://localhost:11434");
         drop(conn);
 
+        // SAFETY: test-only, single-threaded environment variable manipulation
+        unsafe {
+            std::env::set_var("TEST_OPENAI_API_KEY", "sk-test-openai");
+            std::env::set_var("TEST_ANTHROPIC_API_KEY", "sk-test-anthropic");
+            std::env::set_var("TEST_OLLAMA_API_KEY", "ollama-key");
+        }
+
         let registry = ProviderRegistry::new();
         let loader = DbProviderLoader::new(tmp.path().to_str().unwrap());
 
@@ -255,6 +277,14 @@ mod tests {
         assert!(registry.get("openai").await.is_some());
         assert!(registry.get("anthropic").await.is_some());
         assert!(registry.get("ollama").await.is_some());
+
+        // Cleanup
+        // SAFETY: test-only cleanup
+        unsafe {
+            std::env::remove_var("TEST_OPENAI_API_KEY");
+            std::env::remove_var("TEST_ANTHROPIC_API_KEY");
+            std::env::remove_var("TEST_OLLAMA_API_KEY");
+        }
     }
 
     #[tokio::test]
