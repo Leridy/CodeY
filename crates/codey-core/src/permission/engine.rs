@@ -1,6 +1,7 @@
 //! Permission engine for checking tool access against a 7-level permission model.
 
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 /// Permission levels (7 levels, ordered from least to most privileged).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -19,6 +20,26 @@ pub enum PermissionLevel {
     Network = 6,
     /// Full access including hardware (L7)
     FullAccess = 7,
+}
+
+/// 从字符串解析权限级别
+///
+/// 支持与枚举变体名称一致的字符串，例如 "ReadOnly"、"FileRead" 等
+impl FromStr for PermissionLevel {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "ReadOnly" => Ok(PermissionLevel::ReadOnly),
+            "FileRead" => Ok(PermissionLevel::FileRead),
+            "FileWrite" => Ok(PermissionLevel::FileWrite),
+            "ShellRead" => Ok(PermissionLevel::ShellRead),
+            "ShellWrite" => Ok(PermissionLevel::ShellWrite),
+            "Network" => Ok(PermissionLevel::Network),
+            "FullAccess" => Ok(PermissionLevel::FullAccess),
+            _ => Err(format!("未知的权限级别: '{}'", s)),
+        }
+    }
 }
 
 /// Result of a permission check.
