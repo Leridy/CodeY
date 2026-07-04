@@ -1,6 +1,0 @@
-/Users/Leridy/CodeY/target/debug/build/mime_guess-84293e1c8b896e9e/build_script_build-84293e1c8b896e9e.d: /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/build.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/src/mime_types.rs
-
-/Users/Leridy/CodeY/target/debug/build/mime_guess-84293e1c8b896e9e/build_script_build-84293e1c8b896e9e: /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/build.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/src/mime_types.rs
-
-/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/build.rs:
-/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mime_guess-2.0.5/src/mime_types.rs:
