@@ -1,0 +1,19 @@
+{
+  "id": "anthropic",
+  "name": "Anthropic",
+  "base_url": "https://api.anthropic.com/v1",
+  "api_key_env": "ANTHROPIC_API_KEY",
+  "chat_endpoint": "/messages",
+  "default_model": "claude-sonnet-4-20250514",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "x-api-key": "${api_key}",
+    "anthropic-version": "2023-06-01"
+  },
+  "models": [
+    {"id": "claude-sonnet-4-20250514", "name": "Claude Sonnet 4", "context_window": 200000, "max_output_tokens": 8192},
+    {"id": "claude-3-5-haiku-20241022", "name": "Claude 3.5 Haiku", "context_window": 200000, "max_output_tokens": 8192},
+    {"id": "claude-3-opus-20240229", "name": "Claude 3 Opus", "context_window": 200000, "max_output_tokens": 4096}
+  ]
+}

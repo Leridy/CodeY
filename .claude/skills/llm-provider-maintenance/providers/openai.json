@@ -1,0 +1,19 @@
+{
+  "id": "openai",
+  "name": "OpenAI",
+  "base_url": "https://api.openai.com/v1",
+  "api_key_env": "OPENAI_API_KEY",
+  "models_endpoint": "/models",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "gpt-4o",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "gpt-4o", "name": "GPT-4o", "context_window": 128000, "max_output_tokens": 16384},
+    {"id": "gpt-4", "name": "GPT-4", "context_window": 128000, "max_output_tokens": 8192},
+    {"id": "gpt-3.5-turbo", "name": "GPT-3.5 Turbo", "context_window": 16385, "max_output_tokens": 4096}
+  ]
+}

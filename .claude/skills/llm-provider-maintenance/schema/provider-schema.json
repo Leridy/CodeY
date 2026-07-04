@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "name", "base_url", "chat_endpoint", "default_model"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "提供商唯一标识"
+    },
+    "name": {
+      "type": "string",
+      "description": "提供商显示名称"
+    },
+    "base_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "API 基础 URL"
+    },
+    "api_key_env": {
+      "type": "string",
+      "description": "API Key 环境变量名"
+    },
+    "models_endpoint": {
+      "type": "string",
+      "description": "模型列表端点"
+    },
+    "chat_endpoint": {
+      "type": "string",
+      "description": "聊天完成端点"
+    },
+    "default_model": {
+      "type": "string",
+      "description": "默认模型"
+    },
+    "supports_streaming": {
+      "type": "boolean",
+      "description": "是否支持流式输出"
+    },
+    "supports_function_calling": {
+      "type": "boolean",
+      "description": "是否支持函数调用"
+    },
+    "headers": {
+      "type": "object",
+      "description": "自定义请求头"
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "context_window": { "type": "integer" },
+          "max_output_tokens": { "type": "integer" }
+        }
+      },
+      "description": "可用模型列表"
+    }
+  }
+}

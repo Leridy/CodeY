@@ -55,6 +55,54 @@
 
 ---
 
+## 语言规范
+
+### 强制要求
+
+**所有非代码产出必须使用中文**，包括但不限于：
+- 文档内容
+- 代码注释
+- 提交信息
+- 审查报告
+- 进度更新
+- 问题描述
+
+**技术术语保留英文**：
+- 编程语言名称（Rust, TypeScript, JavaScript）
+- 框架名称（React, Tauri, Axum）
+- 协议名称（JSON-RPC, WebSocket, SSE）
+- 工具名称（Vitest, Playwright, ESLint）
+- API 名称（agent/start, file/read, shell/execute）
+
+**代码本身保持英文**：
+- 变量名、函数名、类型名
+- 代码注释（技术说明）
+- 测试用例名称
+
+### 示例
+
+```
+# ✅ 正确
+// 读取文件内容
+pub async fn read(&self, params: Value) -> Result<Response> {
+    // 检查路径参数
+    let path = params.get("path")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| anyhow::anyhow!("缺少 path 参数"))?;
+}
+
+# ❌ 错误
+// Read file content
+pub async fn read(&self, params: Value) -> Result<Response> {
+    // Check path parameter
+    let path = params.get("path")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| anyhow::anyhow!("Missing path parameter"))?;
+}
+```
+
+---
+
 ## 子 Agent 管理规则
 
 ### 主 Agent 职责（禁止亲力亲为）

@@ -1,0 +1,16 @@
+{
+  "id": "ollama",
+  "name": "Ollama",
+  "base_url": "http://localhost:11434/v1",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "llama3.1",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {},
+  "models": [
+    {"id": "llama3.1", "name": "Llama 3.1", "context_window": 131072, "max_output_tokens": 8192},
+    {"id": "qwen2.5", "name": "Qwen 2.5", "context_window": 131072, "max_output_tokens": 8192},
+    {"id": "deepseek-v3", "name": "DeepSeek V3", "context_window": 65536, "max_output_tokens": 8192},
+    {"id": "mistral", "name": "Mistral", "context_window": 32768, "max_output_tokens": 8192}
+  ]
+}

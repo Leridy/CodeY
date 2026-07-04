@@ -1,0 +1,13 @@
+{
+  "id": "provider-id",
+  "name": "提供商名称",
+  "base_url": "https://api.example.com/v1",
+  "api_key_env": "PROVIDER_API_KEY",
+  "models_endpoint": "/models",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "default-model",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {},
+  "models": []
+}
