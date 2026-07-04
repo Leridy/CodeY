@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/your-username/CodeY/actions"><img src="https://img.shields.io/github/actions/workflow/status/your-username/CodeY/ci.yml?branch=main&logo=github&label=Build" alt="Build Status"></a>
+  <a href="https://github.com/Leridy/CodeY/actions"><img src="https://img.shields.io/github/actions/workflow/status/Leridy/CodeY/ci.yml?branch=master&logo=github&label=Build" alt="Build Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://github.com/your-username/CodeY/releases"><img src="https://img.shields.io/badge/Version-0.1.0-blue.svg" alt="Version"></a>
+  <a href="https://github.com/Leridy/CodeY/releases"><img src="https://img.shields.io/badge/Version-0.1.0-blue.svg" alt="Version"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?logo=typescript" alt="TypeScript"></a>
   <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/Rust-2024-DEA584.svg?logo=rust" alt="Rust Edition 2024"></a>
   <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-19.x-61DAFB.svg?logo=react" alt="React"></a>
@@ -209,7 +209,7 @@ CodeY 是一个 AI Agent 工具，旨在提供类似 OpenAI Codex CLI 和 Anthro
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/your-username/CodeY.git
+git clone https://github.com/Leridy/CodeY.git
 cd CodeY
 
 # 2. 安装前端依赖
@@ -241,7 +241,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 npm install -g pnpm
 
 # 克隆并构建
-git clone https://github.com/your-username/CodeY.git && cd CodeY
+git clone https://github.com/Leridy/CodeY.git && cd CodeY
 pnpm install && cargo build
 ```
 
@@ -260,7 +260,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 npm install -g pnpm
 
 # 克隆并构建
-git clone https://github.com/your-username/CodeY.git && cd CodeY
+git clone https://github.com/Leridy/CodeY.git && cd CodeY
 pnpm install && cargo build
 ```
 
@@ -277,7 +277,7 @@ pnpm install && cargo build
 npm install -g pnpm
 
 # 克隆并构建
-git clone https://github.com/your-username/CodeY.git
+git clone https://github.com/Leridy/CodeY.git
 cd CodeY
 pnpm install
 cargo build
@@ -529,7 +529,7 @@ Fork 仓库 ──▶ 创建分支 ──▶ 编写代码 ──▶ 运行测试
 ### 步骤
 
 1. **Fork** 本仓库到你的 GitHub 账号
-2. **Clone** 到本地: `git clone https://github.com/your-username/CodeY.git`
+2. **Clone** 到本地: `git clone https://github.com/Leridy/CodeY.git`
 3. **创建分支**: `git checkout -b feature/your-feature`
 4. **编写代码** 并确保通过所有测试
 5. **提交**: `git commit -m 'feat: add your feature'`
@@ -630,9 +630,9 @@ copies of the Software...
 
 | 渠道 | 链接 |
 |------|------|
-| Issues | [GitHub Issues](https://github.com/your-username/CodeY/issues) |
-| Discussions | [GitHub Discussions](https://github.com/your-username/CodeY/discussions) |
-| Releases | [GitHub Releases](https://github.com/your-username/CodeY/releases) |
+| Issues | [GitHub Issues](https://github.com/Leridy/CodeY/issues) |
+| Discussions | [GitHub Discussions](https://github.com/Leridy/CodeY/discussions) |
+| Releases | [GitHub Releases](https://github.com/Leridy/CodeY/releases) |
 
 ---
 
