@@ -5,6 +5,7 @@ pub mod tools;
 pub mod permission;
 pub mod llm;
 pub mod protocol;
+pub mod sandbox;
 
 /// Re-export commonly used types
 pub use agent::AgentLoop;
