@@ -1,0 +1,10 @@
+/Users/Leridy/CodeY/target/debug/deps/async_anthropic-1ce1eb6cdb58dea5.d: /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/lib.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/client.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/errors.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/messages.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/models.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/types.rs
+
+/Users/Leridy/CodeY/target/debug/deps/libasync_anthropic-1ce1eb6cdb58dea5.rmeta: /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/lib.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/client.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/errors.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/messages.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/models.rs /Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/types.rs
+
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/lib.rs:
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/client.rs:
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/errors.rs:
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/messages.rs:
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/models.rs:
+/Users/Leridy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/async-anthropic-0.4.0/src/types.rs:

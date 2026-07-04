@@ -1,0 +1,24 @@
+[package]
+name = "codey-tauri"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Tauri desktop application for CodeY"
+
+[dependencies]
+# Workspace
+codey-core = { path = "../codey-core" }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+
+# Tauri
+tauri.workspace = true
+tauri-plugin-shell.workspace = true
+tauri-plugin-fs.workspace = true
+tauri-plugin-dialog.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

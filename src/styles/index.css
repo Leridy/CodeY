@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+/* Import design tokens from skill */
+@import '../../.claude/skills/codey-frontend-style/design-system/design-tokens.css';
