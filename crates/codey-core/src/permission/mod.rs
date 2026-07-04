@@ -2,4 +2,9 @@ pub mod engine;
 pub mod rules;
 pub mod sandbox;
 
-pub use engine::PermissionEngine;
+#[cfg(test)]
+mod tests;
+
+pub use engine::{PermissionEngine, PermissionLevel, PermissionResult};
+pub use rules::RuleEngine;
+pub use sandbox::SandboxManager;
