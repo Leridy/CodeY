@@ -185,7 +185,10 @@ fn from_openai_message(msg: &OpenAiMessage) -> Message {
                 .iter()
                 .map(|tc| {
                     let arguments: serde_json::Value =
-                        serde_json::from_str(&tc.function.arguments).unwrap_or(json!({}));
+                        serde_json::from_str(&tc.function.arguments).unwrap_or_else(|e| {
+                            tracing::warn!("Failed to parse tool call arguments: {}, using empty object", e);
+                            json!({})
+                        });
                     ToolCall {
                         id: tc.id.clone(),
                         name: tc.function.name.clone(),
@@ -350,25 +353,34 @@ impl LlmProvider for OpenAiProvider {
 
                     let data = &line[6..];
                     if data == "[DONE]" {
-                        let _ = tx
+                        if tx
                             .send(StreamChunk {
                                 delta: String::new(),
                                 finish_reason: Some("stop".to_string()),
                             })
-                            .await;
-                        return;
+                            .await
+                            .is_err()
+                        {
+                            tracing::debug!("Receiver dropped, stopping stream");
+                            return;
+                        }
                     }
 
                     if let Ok(stream_resp) =
                         serde_json::from_str::<OpenAiStreamResponse>(data)
                     {
                         for choice in stream_resp.choices {
-                            let _ = tx
+                            if tx
                                 .send(StreamChunk {
                                     delta: choice.delta.content.unwrap_or_default(),
                                     finish_reason: choice.finish_reason,
                                 })
-                                .await;
+                                .await
+                                .is_err()
+                            {
+                                tracing::debug!("Receiver dropped, stopping stream");
+                                return;
+                            }
                         }
                     }
                 }

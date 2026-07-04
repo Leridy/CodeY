@@ -76,11 +76,25 @@ impl DbProviderLoader {
         registry: &ProviderRegistry,
     ) {
         for config in configs {
-            let api_key = config
-                .api_key_env
-                .as_ref()
-                .and_then(|env_var| std::env::var(env_var).ok())
-                .unwrap_or_default();
+            let api_key = match &config.api_key_env {
+                Some(var_name) => {
+                    std::env::var(var_name).unwrap_or_else(|_| {
+                        tracing::warn!(
+                            provider = %config.id,
+                            env_var = %var_name,
+                            "Environment variable not set for provider"
+                        );
+                        String::new()
+                    })
+                }
+                None => {
+                    tracing::warn!(
+                        provider = %config.id,
+                        "No env_var configured for provider"
+                    );
+                    String::new()
+                }
+            };
 
             let provider: Option<Box<dyn LlmProvider>> = match config.id.as_str() {
                 "openai" => Some(Box::new(OpenAiProvider::new(api_key))),

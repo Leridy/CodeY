@@ -266,21 +266,30 @@ impl LlmProvider for AnthropicProvider {
                         match event.event_type.as_str() {
                             "content_block_delta" => {
                                 if let Some(delta) = event.delta {
-                                    let _ = tx
+                                    if tx
                                         .send(StreamChunk {
                                             delta: delta.text.unwrap_or_default(),
                                             finish_reason: None,
                                         })
-                                        .await;
+                                        .await
+                                        .is_err()
+                                    {
+                                        tracing::debug!("Receiver dropped, stopping stream");
+                                        return;
+                                    }
                                 }
                             }
                             "message_stop" => {
-                                let _ = tx
+                                if tx
                                     .send(StreamChunk {
                                         delta: String::new(),
                                         finish_reason: Some("stop".to_string()),
                                     })
-                                    .await;
+                                    .await
+                                    .is_err()
+                                {
+                                    tracing::debug!("Receiver dropped, stopping stream");
+                                }
                                 return;
                             }
                             _ => {}

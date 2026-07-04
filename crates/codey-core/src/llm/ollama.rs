@@ -254,12 +254,17 @@ impl LlmProvider for OllamaProvider {
                             None
                         };
 
-                        let _ = tx
+                        if tx
                             .send(StreamChunk {
                                 delta: resp.message.content,
                                 finish_reason,
                             })
-                            .await;
+                            .await
+                            .is_err()
+                        {
+                            tracing::debug!("Receiver dropped, stopping stream");
+                            return;
+                        }
 
                         if resp.done {
                             return;
