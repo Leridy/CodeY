@@ -23,6 +23,10 @@ tracing.workspace = true
 # HTTP
 reqwest.workspace = true
 
+# Async streams
+futures.workspace = true
+bytes.workspace = true
+
 # Async trait
 async-trait = "0.1"
 
@@ -32,6 +36,9 @@ uuid.workspace = true
 # LLM
 async-openai.workspace = true
 async-anthropic.workspace = true
+
+# Database
+rusqlite.workspace = true
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["test-util"] }

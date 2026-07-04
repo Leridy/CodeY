@@ -31,6 +31,10 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 # HTTP
 reqwest = { version = "0.12", features = ["json", "stream"] }
 
+# Async streams
+futures = "0.3"
+bytes = "1"
+
 # Web framework (for codey-server)
 axum = { version = "0.8", features = ["ws"] }
 tower = "0.5"
@@ -48,6 +52,9 @@ async-anthropic = "0.4"
 
 # UUID
 uuid = { version = "1", features = ["v4"] }
+
+# Database
+rusqlite = { version = "0.31", features = ["bundled"] }
 
 # Testing
 tempfile = "3"
