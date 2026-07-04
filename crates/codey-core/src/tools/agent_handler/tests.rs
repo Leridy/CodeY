@@ -133,7 +133,7 @@ mod tests {
     // -------------------------------------------------------
 
     #[tokio::test]
-    async fn test_send_returns_response() {
+    async fn test_send_returns_not_implemented_error() {
         let handler = AgentHandler::new("/tmp".to_string());
 
         handler
@@ -143,10 +143,11 @@ mod tests {
         let req = make_request("agent/send", Some(json!({ "message": "hello" })));
         let resp = handler.handle_request(req).await;
 
-        assert!(resp.error.is_none(), "send should not error");
-        let result = resp.result.as_ref().unwrap();
-        assert_eq!(result["response"], "Echo: hello");
-        assert_eq!(result["status"], "completed");
+        // Phase 3: LLM 管道集成前，agent/send 返回"未实现"错误
+        assert!(resp.result.is_none(), "should not have result");
+        let err = resp.error.as_ref().unwrap();
+        assert_eq!(err.code, -32601);
+        assert_eq!(err.message, "Not Implemented");
     }
 
     #[tokio::test]
@@ -351,15 +352,16 @@ mod tests {
         assert!(resp.error.is_none());
         let agent_id = resp.result.as_ref().unwrap()["agent_id"].clone();
 
-        // Send
+        // Send - Phase 3 LLM 管道集成前返回"未实现"错误
         let resp = handler
             .handle_request(make_request(
                 "agent/send",
                 Some(json!({ "message": "ping" })),
             ))
             .await;
-        assert!(resp.error.is_none());
-        assert_eq!(resp.result.as_ref().unwrap()["response"], "Echo: ping");
+        assert!(resp.result.is_none());
+        let err = resp.error.as_ref().unwrap();
+        assert_eq!(err.code, -32601);
 
         // Cancel
         let resp = handler

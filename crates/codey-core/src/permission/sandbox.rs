@@ -1,7 +1,7 @@
 //! Sandbox manager for enforcing file system restrictions.
 
 use anyhow::Result;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 
 /// Sandbox manager that enforces file system path restrictions.
 ///
@@ -41,22 +41,27 @@ impl SandboxManager {
     /// 2. Allowed paths are checked next
     /// 3. Default: path must be under working directory
     pub fn is_path_allowed(&self, path: &Path) -> bool {
+        let normalized_path = normalize_path(path);
+
         // Check denied paths first (highest priority)
         for denied in &self.denied_paths {
-            if path.starts_with(denied) {
+            let normalized_denied = normalize_path(denied);
+            if normalized_path.starts_with(&normalized_denied) {
                 return false;
             }
         }
 
         // Check allowed paths
         for allowed in &self.allowed_paths {
-            if path.starts_with(allowed) {
+            let normalized_allowed = normalize_path(allowed);
+            if normalized_path.starts_with(&normalized_allowed) {
                 return true;
             }
         }
 
         // Default: path must be under working directory
-        path.starts_with(&self.working_directory)
+        let normalized_working = normalize_path(&self.working_directory);
+        normalized_path.starts_with(&normalized_working)
     }
 
     /// Resolve a path string to an absolute PathBuf, checking sandbox permissions.
@@ -78,4 +83,28 @@ impl SandboxManager {
             anyhow::bail!("Path not allowed: {}", resolved.display())
         }
     }
+}
+
+/// 规范化路径，移除 `.` 和 `..` 组件，防止路径遍历攻击。
+///
+/// 不依赖文件系统（不要求路径存在），仅处理路径组件。
+fn normalize_path(path: &Path) -> PathBuf {
+    let mut components = Vec::new();
+    for component in path.components() {
+        match component {
+            Component::CurDir => {}       // 跳过 "."
+            Component::ParentDir => {     // 处理 ".."
+                // 仅在有可弹出的普通组件时弹出（保留根目录前缀）
+                let last = components.last();
+                match last {
+                    Some(Component::Normal(_)) => {
+                        components.pop();
+                    }
+                    _ => {} // 根目录或空时忽略 ".."
+                }
+            }
+            other => components.push(other),
+        }
+    }
+    components.iter().collect()
 }

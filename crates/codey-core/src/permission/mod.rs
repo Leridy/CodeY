@@ -5,6 +5,6 @@ pub mod sandbox;
 #[cfg(test)]
 mod tests;
 
-pub use engine::{PermissionEngine, PermissionLevel, PermissionResult};
+pub use engine::{PermissionEngine, PermissionLevel, PermissionResult, PermissionRule, RuleAction};
 pub use rules::RuleEngine;
 pub use sandbox::SandboxManager;

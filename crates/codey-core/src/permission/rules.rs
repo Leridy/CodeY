@@ -2,6 +2,7 @@
 
 use anyhow::Result;
 use std::path::Path;
+use tracing::warn;
 
 use super::engine::{PermissionLevel, PermissionRule, RuleAction};
 
@@ -50,7 +51,10 @@ impl RuleEngine {
                     "allow" => RuleAction::Allow,
                     "deny" => RuleAction::Deny,
                     "require_approval" => RuleAction::RequireApproval,
-                    _ => continue, // Skip unknown actions
+                    unknown => {
+                        warn!("规则文件中遇到未知动作 '{}', 跳过此行", unknown);
+                        continue;
+                    }
                 };
 
                 self.rules.push(PermissionRule {

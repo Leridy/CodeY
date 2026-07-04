@@ -3,7 +3,6 @@
 //! 实现 Agent 的主对话循环，连接用户输入、LLM 调用、工具执行和响应输出
 
 use anyhow::Result;
-use std::str::FromStr;
 use std::sync::Arc;
 use tracing::{debug, info, warn};
 
@@ -12,7 +11,7 @@ use crate::agent::types::{
     AgentLoopConfig, AgentResponse, ExecutedToolCall, ToolExecutionResult,
 };
 use crate::llm::{ChatRequest, LlmProvider, Message as LlmMessage, Tool, ToolCall, Usage};
-use crate::permission::{PermissionEngine, PermissionLevel, PermissionResult};
+use crate::permission::{PermissionEngine, PermissionResult};
 use crate::sandbox::SandboxManager;
 use crate::tools::{ToolOrchestrator, ToolRegistry};
 
@@ -220,11 +219,9 @@ impl AgentLoop {
         };
 
         // 2. 检查权限
-        let required_level = PermissionLevel::from_str(&tool.required_permission)
-            .unwrap_or(PermissionLevel::ReadOnly);
         let permission_result =
             self.permission_engine
-                .check(&tool_call.name, required_level);
+                .check(&tool_call.name, tool.required_permission);
 
         match permission_result {
             PermissionResult::Denied(reason) => {

@@ -1,6 +1,6 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (LLM Provider Spec 补齐)
+> 最后更新：2026-07-05 (Agent Loop 完成)
 
 ## 当前任务
 
@@ -68,13 +68,15 @@
 - [x] 75 个测试全部通过
 
 ## Phase 2.4 Agent Loop 实现 ✅
-- [x] 实现核心类型：AgentLoopConfig、AgentResponse、ExecutedToolCall、ToolExecutionResult
-- [x] 增强 Context：支持 tool_calls、to_llm_messages()、add_tool_result()
-- [x] 实现 StreamManager：流式响应管理器，支持内容增量和工具调用事件
-- [x] 实现工具适配器：FunctionCallingAdapter (OpenAI)、ToolUseAdapter (Anthropic)、ToolCallAdapterFactory
-- [x] 重写 AgentLoop 主循环：run()、process_message()、handle_tool_call()
-- [x] 添加 89 个测试用例（agent 模块 69 个 + adapters 20 个），全部通过
-- [x] 总测试套件 284 个测试全部通过
+- [x] 实现 AgentLoop 主循环 (run/process_message/handle_tool_call)
+- [x] 实现 AgentContext 上下文管理（支持 tool_calls）
+- [x] 实现 StreamManager 流式管理器
+- [x] 实现 FunctionCallingAdapter/ToolUseAdapter 工具调用适配器
+- [x] 集成 ToolOrchestrator 实现真正的工具执行
+- [x] 为 PermissionLevel 实现 FromStr trait
+- [x] 为 Tool 结构体添加 parameters 字段
+- [x] 添加 284 个测试，全部通过
+- [x] 生成 Agent Loop 设计文档和博客
 
 ## Phase 2.3 沙箱系统实现 ✅
 - [x] 实现 SandboxManager trait，支持 macOS Seatbelt 和 Linux bubblewrap

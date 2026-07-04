@@ -68,7 +68,10 @@ pub struct PermissionRule {
     pub pattern: String,
     /// Action to take when the pattern matches.
     pub action: RuleAction,
-    /// Permission level associated with this rule.
+    /// 权限级别，当前由 RuleEngine 默认设置为 ReadOnly。
+    ///
+    /// 此字段为未来扩展预留（例如：根据规则动态调整权限级别），
+    /// 当前 check() 流程中未使用此字段，权限级别由调用方传入。
     pub level: PermissionLevel,
 }
 
@@ -90,6 +93,13 @@ impl PermissionEngine {
     /// Add a rule to the engine. Rules are checked in insertion order (first match wins).
     pub fn add_rule(&mut self, rule: PermissionRule) {
         self.rules.push(rule);
+    }
+
+    /// 从 RuleEngine 加载规则到 PermissionEngine。
+    ///
+    /// 这将 RuleEngine 解析的规则连接到权限检查流程中。
+    pub fn load_rules(&mut self, rules: &[PermissionRule]) {
+        self.rules.extend(rules.iter().cloned());
     }
 
     /// Check permission for a tool call.

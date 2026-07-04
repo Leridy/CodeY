@@ -193,13 +193,17 @@ impl AgentHandler {
                 })),
             })?;
 
-        // TODO: Integrate with LLM pipeline
-        // For now, echo back the message
-        Ok(json!({
-            "response": format!("Echo: {}", message),
-            "status": "completed",
-            "conversation_id": state.conversation_id,
-        }))
+        // Phase 3: 接入 LLM 管道，实现完整的 Agent 对话循环
+        // 当前返回明确的"未实现"错误，避免回显消息造成误导
+        Err(ErrorObject {
+            code: METHOD_NOT_FOUND,
+            message: "Not Implemented".to_string(),
+            data: Some(json!({
+                "reason": "agent/send 的 LLM 管道集成尚未实现（计划在 Phase 3 完成）",
+                "received_message": message,
+                "conversation_id": state.conversation_id,
+            })),
+        })
     }
 
     /// Cancel the current agent operation.

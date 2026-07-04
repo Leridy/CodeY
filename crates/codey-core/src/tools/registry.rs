@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde_json::Value;
 
+use crate::permission::PermissionLevel;
+
 /// Registry of available tools
 pub struct ToolRegistry {
     tools: HashMap<String, Tool>,
@@ -11,7 +13,8 @@ pub struct ToolRegistry {
 pub struct Tool {
     pub name: String,
     pub description: String,
-    pub required_permission: String,
+    /// 工具执行所需的最低权限级别
+    pub required_permission: PermissionLevel,
     /// 工具参数的 JSON Schema 定义
     pub parameters: Value,
 }
@@ -30,7 +33,7 @@ impl ToolRegistry {
         self.register(Tool {
             name: "file/read".to_string(),
             description: "Read file contents".to_string(),
-            required_permission: "FileRead".to_string(),
+            required_permission: PermissionLevel::FileRead,
             parameters: serde_json::json!({
                 "type": "object",
                 "properties": {
@@ -45,7 +48,7 @@ impl ToolRegistry {
         self.register(Tool {
             name: "file/write".to_string(),
             description: "Write file contents".to_string(),
-            required_permission: "FileWrite".to_string(),
+            required_permission: PermissionLevel::FileWrite,
             parameters: serde_json::json!({
                 "type": "object",
                 "properties": {
@@ -65,7 +68,7 @@ impl ToolRegistry {
         self.register(Tool {
             name: "shell/execute".to_string(),
             description: "Execute shell command".to_string(),
-            required_permission: "ShellRead".to_string(),
+            required_permission: PermissionLevel::ShellRead,
             parameters: serde_json::json!({
                 "type": "object",
                 "properties": {
