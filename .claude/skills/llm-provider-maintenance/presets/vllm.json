@@ -1,0 +1,13 @@
+{
+  "id": "vllm",
+  "name": "vLLM",
+  "base_url": "http://localhost:8000/v1",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "default",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {},
+  "models": [
+    {"id": "default", "name": "默认模型", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

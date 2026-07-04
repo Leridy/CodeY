@@ -1,0 +1,17 @@
+{
+  "id": "deepseek",
+  "name": "DeepSeek",
+  "base_url": "https://api.deepseek.com/v1",
+  "api_key_env": "DEEPSEEK_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "deepseek-chat",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "deepseek-chat", "name": "DeepSeek-V4", "context_window": 128000, "max_output_tokens": 8192},
+    {"id": "deepseek-reasoner", "name": "DeepSeek-R1", "context_window": 128000, "max_output_tokens": 8192}
+  ]
+}

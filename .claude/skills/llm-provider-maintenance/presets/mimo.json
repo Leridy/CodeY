@@ -1,0 +1,16 @@
+{
+  "id": "mimo",
+  "name": "小米 MiMo",
+  "base_url": "https://api.mimo.ai/v1",
+  "api_key_env": "MIMO_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "MiMo-7B",
+  "supports_streaming": true,
+  "supports_function_calling": false,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "MiMo-7B", "name": "MiMo-7B", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

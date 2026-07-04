@@ -1,0 +1,19 @@
+{
+  "id": "qwen",
+  "name": "通义千问",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "api_key_env": "DASHSCOPE_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "qwen-turbo",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "qwen-turbo", "name": "Qwen-Turbo", "context_window": 131072, "max_output_tokens": 8192},
+    {"id": "qwen-plus", "name": "Qwen-Plus", "context_window": 131072, "max_output_tokens": 8192},
+    {"id": "qwen-max", "name": "Qwen3-Max", "context_window": 131072, "max_output_tokens": 8192},
+    {"id": "qwen3", "name": "Qwen3", "context_window": 131072, "max_output_tokens": 8192}
+  ]
+}

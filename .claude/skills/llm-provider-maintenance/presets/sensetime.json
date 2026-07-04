@@ -1,0 +1,17 @@
+{
+  "id": "sensetime",
+  "name": "商汤",
+  "base_url": "https://api.sensenova.cn/v1",
+  "api_key_env": "SENSECHAT_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "SenseChat-5",
+  "supports_streaming": true,
+  "supports_function_calling": false,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "SenseChat-5", "name": "SenseChat 5", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "SenseChat-4", "name": "SenseChat 4", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

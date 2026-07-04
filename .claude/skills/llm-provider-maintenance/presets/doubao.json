@@ -1,0 +1,18 @@
+{
+  "id": "doubao",
+  "name": "豆包",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+  "api_key_env": "ARK_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "doubao-pro-32k",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "doubao-pro-32k", "name": "豆包 Pro 32K", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "doubao-pro-128k", "name": "豆包 Pro 128K", "context_window": 131072, "max_output_tokens": 4096},
+    {"id": "doubao-lite-32k", "name": "豆包 Lite 32K", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

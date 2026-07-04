@@ -1,0 +1,18 @@
+{
+  "id": "zhipu",
+  "name": "智谱",
+  "base_url": "https://open.bigmodel.cn/api/paas/v4",
+  "api_key_env": "ZHIPU_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "glm-4",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "glm-4", "name": "GLM-4", "context_window": 128000, "max_output_tokens": 8192},
+    {"id": "glm-4-flash", "name": "GLM-4-Flash", "context_window": 128000, "max_output_tokens": 8192},
+    {"id": "glm-5", "name": "GLM-5", "context_window": 128000, "max_output_tokens": 8192}
+  ]
+}

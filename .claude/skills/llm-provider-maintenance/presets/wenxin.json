@@ -1,0 +1,18 @@
+{
+  "id": "wenxin",
+  "name": "文心一言",
+  "base_url": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop",
+  "api_key_env": "QIANFAN_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "ernie-4.0-8k",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "ernie-4.0-8k", "name": "文心 4.0", "context_window": 8192, "max_output_tokens": 4096},
+    {"id": "ernie-3.5-8k", "name": "文心 3.5", "context_window": 8192, "max_output_tokens": 4096},
+    {"id": "ernie-speed-128k", "name": "文心 Speed", "context_window": 131072, "max_output_tokens": 4096}
+  ]
+}

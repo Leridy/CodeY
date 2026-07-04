@@ -1,0 +1,17 @@
+{
+  "id": "baichuan",
+  "name": "百川",
+  "base_url": "https://api.baichuan-ai.com/v1",
+  "api_key_env": "BAICHUAN_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "Baichuan4",
+  "supports_streaming": true,
+  "supports_function_calling": false,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "Baichuan4", "name": "百川大模型", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "Baichuan3-Turbo", "name": "百川3 Turbo", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

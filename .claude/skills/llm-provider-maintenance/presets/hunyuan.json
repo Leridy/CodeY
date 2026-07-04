@@ -1,0 +1,18 @@
+{
+  "id": "hunyuan",
+  "name": "腾讯元宝",
+  "base_url": "https://api.hunyuan.cloud.tencent.com/v1",
+  "api_key_env": "HUNYUAN_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "hunyuan-pro",
+  "supports_streaming": true,
+  "supports_function_calling": true,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "hunyuan-pro", "name": "混元 Pro", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "hunyuan-standard", "name": "混元 Standard", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "hunyuan-lite", "name": "混元 Lite", "context_window": 32768, "max_output_tokens": 4096}
+  ]
+}

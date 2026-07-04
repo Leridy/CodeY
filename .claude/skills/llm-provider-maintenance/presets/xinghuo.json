@@ -1,0 +1,18 @@
+{
+  "id": "xinghuo",
+  "name": "讯飞星火",
+  "base_url": "https://spark-api-open.xf-yun.com/v1",
+  "api_key_env": "SPARK_API_KEY",
+  "chat_endpoint": "/chat/completions",
+  "default_model": "generalv3.5",
+  "supports_streaming": true,
+  "supports_function_calling": false,
+  "headers": {
+    "Authorization": "Bearer ${api_key}"
+  },
+  "models": [
+    {"id": "generalv3.5", "name": "星火 4.0", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "generalv3", "name": "星火 3.5", "context_window": 32768, "max_output_tokens": 4096},
+    {"id": "generalv2", "name": "星火 2.0", "context_window": 8192, "max_output_tokens": 4096}
+  ]
+}
