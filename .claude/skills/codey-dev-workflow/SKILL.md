@@ -1,32 +1,88 @@
-# codey-dev-workflow
+---
+name: codey-dev-workflow
+description: 在启动新功能开发、协调多 Agent 任务、遵循 Spec-Driven Development 流程或追踪项目进度时使用此 skill。触发关键词："开发"、"实现"、"workflow"、"工作流"、"spec"、"进度"、"提交"、"原子提交"、"Agent"。
+---
 
-CodeY 项目的标准化多 Agent 协作开发工作流。从头脑风暴到代码提交，确保开发流程一致性、进度可追踪、质量有保障。
+# 开发工作流 Skill
 
-## 何时使用
+标准化的多 Agent 协作开发工作流，从头脑风暴到代码提交。
+
+## 何时激活
 
 - 启动新功能开发时
 - 多 Agent 环境下需要协调开发任务时
 - 需要规范化 Spec-Driven Development 流程时
 - 追踪项目进度、规范化提交和版本管理时
 
-## 快速开始
+## 核心流程
 
 ```
-用户请求 → 主 Agent 头脑风暴 → 生成 Spec → 开发子 Agent 实现 → 测试子 Agent 验证 → 审查子 Agent 审查 → 主 Agent 验收提交
+用户请求 → 头脑风暴 → Spec 创建 → 开发实现 → 测试 → 代码审查 → 验收提交
 ```
 
-**示例**：用户说 "实现文件上传功能" → 主 Agent 澄清需求并生成 Spec → 开发 Agent 按 Spec 实现 → 测试 Agent 编写测试 → 审查 Agent 检查代码 → 主 Agent 提交并更新进度。
+## Agent 角色
 
-## 详细文档
+| 角色 | 职责 | 读权限 | 写权限 |
+|------|------|--------|--------|
+| 主 Agent | 头脑风暴、验收、进度管理 | 全部 | progress.md, Spec 文件 |
+| 开发子 Agent | 代码实现 | Spec, progress.md | 源代码 |
+| 测试子 Agent | 测试编写和执行 | Spec, 源代码 | 测试代码 |
+| 审查子 Agent | 代码审查 | Spec, 源代码, 测试代码 | 审查报告 |
 
-- [README.md](./README.md) - 完整工作流文档、Agent 角色、配置说明
-- [workflow/](./workflow/) - 各阶段详细流程
-- [agents/](./agents/) - Agent 角色职责定义
-- [templates/](./templates/) - 进度文件和提交信息模板
+## Spec-Driven Development
 
-## 核心原则
+**规则**：没有 Spec，不写代码。
 
-1. **Spec 先行**：没有 Spec 不写代码
-2. **进度透明**：progress.md 是唯一任务真相来源
-3. **原子提交**：每次提交代表一个可工作的状态
-4. **独立审查**：审查 Agent 独立于开发 Agent
+**目录结构**：
+```
+docs/specs/YYYY-MM-DD-<feature>/
+├── design.md      # 架构设计
+├── api.md         # API 规范
+└── test.md        # 测试规范
+```
+
+## 进度管理
+
+**文件**：`docs/progress.md`
+
+**状态标记**：
+- `- [ ]` pending - 待办
+- `- [~]` in_progress - 进行中
+- `- [x]` completed - 已完成
+- `- [!]` blocked - 阻塞
+
+**规则**：任务完成后立即更新进度文件。
+
+## 提交规范
+
+```
+<type>: <description>
+
+<optional body>
+```
+
+**类型**：feat, fix, refactor, docs, test, chore
+
+## 阶段详情
+
+详见 `workflow/` 目录：
+- `brainstorm-phase.md` - 头脑风暴阶段
+- `develop-phase.md` - 开发实现阶段
+- `test-phase.md` - 测试验证阶段
+- `review-phase.md` - 代码审查阶段
+- `validate-phase.md` - 验收提交阶段
+
+## 集成
+
+- **输入**：来自 `codey-brainstorming` 的需求
+- **规范**：遵循 `codey-code-standards`
+- **测试**：遵循 `codey-testing-standards`
+- **文档**：使用 `doc-maintainer`
+
+## 内置资源
+
+- `workflow/` - 阶段工作流
+- `agents/` - Agent 角色定义
+- `templates/` - 进度和提交模板
+
+完整文档见 `README.md`。

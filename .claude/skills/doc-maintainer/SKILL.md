@@ -1,72 +1,74 @@
-# doc-maintainer
+---
+name: doc-maintainer
+description: 在创建新文档、更新现有文档、检查文档冲突或生成文档目录结构时使用此 skill。确保所有文档遵循统一的目录结构、命名规范和版本管理流程。触发关键词："文档"、"doc"、"CHANGELOG"、"版本"、"创建文档"、"更新文档"、"博客"。
+---
 
-维护 CodeY 项目的文档一致性、版本管理和规范执行。确保所有文档遵循统一的目录结构、命名规范和版本管理流程。
+# 文档维护 Skill
 
-## 何时使用
+维护 CodeY 项目的文档一致性、版本管理和规范执行。
+
+## 何时激活
 
 - 创建新文档时（自动添加日期目录和规范头部）
 - 更新现有文档时（自动递增版本号和更新 CHANGELOG）
 - 检查文档冲突或过期内容时
 - 生成文档目录结构或变更日志时
 
-## 快速开始
+## 文档规范
 
+**目录结构**：
 ```
-用户：创建架构设计文档
-
-Agent：好的，我将创建架构设计文档。
-       日期：2026-07-05
-       阶段：架构设计
-       版本：v1.0.0
-
-       文档已创建：docs/2026-07-05/architecture.md
-       CHANGELOG 已更新。
-
-用户：更新权限模型章节
-
-Agent：好的，我将更新 architecture.md 的权限模型章节。
-       版本：v1.0.0 → v1.1.0
-
-       文档已更新。
-       CHANGELOG 已记录变更。
+docs/
+├── YYYY-MM-DD/          # 按日期组织
+├── specs/               # 规范文档
+├── guides/              # 使用指南
+└── CHANGELOG.md         # 变更日志
 ```
+
+**文件命名**：
+- 小写字母，连字符分隔
+- 示例：`design-decisions.md`、`api-spec.md`
+
+**文档头部**：
+```markdown
+# 文档标题
+
+> 日期：YYYY-MM-DD
+> 阶段：[需求收集|架构设计|实现|测试|发布]
+> 版本：vX.Y.Z
+> 作者：[作者名]
+```
+
+## 版本管理
+
+| 变更类型 | 版本递增 | 示例 |
+|----------|----------|------|
+| 新增章节 | MINOR | v1.0.0 → v1.1.0 |
+| 重大修改 | MINOR | v1.1.0 → v1.2.0 |
+| 结构重组 | MAJOR | v1.2.0 → v2.0.0 |
+| 修正错误 | PATCH | v1.0.0 → v1.0.1 |
 
 ## 核心功能
 
-| 功能 | 说明 | 示例 |
-|------|------|------|
-| 创建文档 | 自动添加日期目录和规范头部 | `doc-create architecture.md` |
-| 更新文档 | 自动递增版本号 | `doc-update architecture.md --section "权限模型"` |
-| 检查冲突 | 扫描同名文件的内容差异 | `doc-check-conflicts architecture.md` |
-| 生成目录 | 生成文档目录结构 | `doc-generate-tree` |
-| 生成变更日志 | 自动生成 CHANGELOG | `doc-generate-changelog` |
-| 博客写作 | 创建博客文章，遵循写作指南 | 参见 [blog-writing.md](./guides/blog-writing.md) |
+- `doc-create` - 创建文档
+- `doc-update` - 更新文档
+- `doc-check-conflicts` - 检查冲突
+- `doc-generate-tree` - 生成目录结构
+- `doc-generate-changelog` - 生成变更日志
 
-## 详细文档
+## 博客写作
 
-- [README.md](./README.md) - 完整文档：规范说明、命令参考、配置选项、最佳实践
-- [guides/](./guides/) - 写作指南
-  - [blog-writing.md](./guides/blog-writing.md) - 博客写作指南
-  - [naming-conventions.md](./guides/naming-conventions.md) - 文档命名规则
-- [examples/](./examples/) - 使用示例
-  - [create-doc.md](./examples/create-doc.md) - 创建文档示例
-  - [update-doc.md](./examples/update-doc.md) - 更新文档示例
-  - [check-conflicts.md](./examples/check-conflicts.md) - 检查冲突示例
-- [templates/](./templates/) - 文档模板
-  - [doc-template.md](./templates/doc-template.md) - 文档模板
-  - [changelog-template.md](./templates/changelog-template.md) - 变更日志模板
+博客文章使用 `[Blog]` 前缀，遵循图文并茂、减少代码的原则。详见 `guides/blog-writing.md`。
 
-## 核心原则
+## 集成
 
-1. **日期组织**：所有文档按日期目录组织
-2. **版本管理**：重大更新递增版本号
-3. **变更记录**：每次更新都记录到 CHANGELOG
-4. **冲突检查**：创建文档前检查同名文件
-5. **规范头部**：所有文档都包含规范的头部信息
-6. **中文交流**：技术术语使用英文，说明使用中文
-7. **博客写作**：博客文章使用 `[Blog]` 前缀，遵循图文并茂、减少代码的原则
+- 与 `codey-brainstorming` 集成：Spec 文档规范化
+- 与 `codey-dev-workflow` 集成：开发流程中的文档管理
 
----
+## 内置资源
 
-*Skill 版本：v1.0.0*
-*创建日期：2026-07-05*
+- `guides/` - 写作指南
+- `examples/` - 使用示例
+- `templates/` - 文档模板
+
+完整文档见 `README.md`。
