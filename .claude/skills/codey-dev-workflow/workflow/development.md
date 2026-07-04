@@ -75,3 +75,98 @@
 - 实现代码文件
 - 更新后的 progress.md
 - 提交信息草稿
+
+---
+
+## 自动化工作流（SDD + TDD 驱动）
+
+### 核心原则
+
+**主 Agent 只关心结果，不干预具体执行过程。**
+
+当代码实现完成且测试用例完备时，主 Agent 自动执行以下流程：
+
+### 自动执行流程
+
+```
+代码实现完成
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│  自动执行（主 Agent 派子 Agent 执行）                │
+│                                                     │
+│  1. 派子 Agent 运行测试                             │
+│     → 按照 codey-testing-standards skill 执行       │
+│     → 验证所有测试通过                              │
+│                                                     │
+│  2. 派子 Agent 代码审查                             │
+│     → 按照 codey-dev-workflow/agents/review-agent   │
+│     → 检查代码质量                                  │
+│                                                     │
+│  3. 派子 Agent 修复问题                             │
+│     → 如有失败，自动修复代码                        │
+│     → 重新运行测试验证                              │
+│                                                     │
+│  4. 派子 Agent 提交代码                             │
+│     → 原子化提交                                    │
+│     → 推送到 GitHub                                 │
+│                                                     │
+│  5. 主 Agent 更新进度                               │
+│     → 更新 progress.md                              │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+结果汇报给用户
+```
+
+### 测试执行规则
+
+1. **派子 Agent 运行测试**：代码实现完成后，派子 Agent 执行 `cargo test`
+2. **测试失败处理**：
+   - 子 Agent 分析失败原因
+   - 子 Agent 自动修复代码（不是修改测试）
+   - 子 Agent 重新运行测试
+3. **测试通过标准**：所有测试通过，无 warning
+4. **参考 Skill**：`codey-testing-standards`
+
+### 代码审查规则
+
+1. **派子 Agent 执行审查**：测试通过后，派子 Agent 进行代码审查
+2. **审查维度**：
+   - 代码规范遵循
+   - 错误处理完整性
+   - 测试覆盖率
+   - 性能考虑
+   - 安全性检查
+3. **审查结果**：生成审查报告，记录发现的问题
+4. **参考 Skill**：`codey-dev-workflow/agents/review-agent.md`
+
+### 提交规则
+
+1. **派子 Agent 提交代码**：审查通过后，派子 Agent 执行提交
+2. **原子化提交**：每个功能模块一个 commit
+3. **提交信息格式**：`<type>: <description>`
+4. **自动推送**：提交后自动推送到 GitHub
+5. **参考 Skill**：`codey-dev-workflow/workflow/commit.md`
+
+### 用户只关心结果
+
+- ✅ 测试是否通过
+- ✅ 代码质量是否达标
+- ✅ 功能是否按 spec 实现
+- ✅ 进度是否更新
+
+**主 Agent 职责：**
+- 派发任务给子 Agent
+- 验收子 Agent 结果
+- 更新进度文件
+
+**子 Agent 职责（按 Skill 执行）：**
+- 运行测试 → 按 `codey-testing-standards` skill
+- 代码审查 → 按 `codey-dev-workflow/agents/review-agent.md`
+- 修复问题 → 按代码规范
+- 提交代码 → 按 `codey-dev-workflow/workflow/commit.md`
+
+**不需要用户干预：**
+- 所有具体操作由子 Agent 执行
+- 主 Agent 只负责派发和验收

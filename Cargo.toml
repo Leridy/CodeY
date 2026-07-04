@@ -46,6 +46,9 @@ tauri-plugin-dialog = "2"
 async-openai = "0.28"
 async-anthropic = "0.4"
 
+# UUID
+uuid = { version = "1", features = ["v4"] }
+
 # Testing
 tempfile = "3"
 mockall = "0.13"

@@ -26,6 +26,9 @@ reqwest.workspace = true
 # Async trait
 async-trait = "0.1"
 
+# UUID
+uuid.workspace = true
+
 # LLM
 async-openai.workspace = true
 async-anthropic.workspace = true
