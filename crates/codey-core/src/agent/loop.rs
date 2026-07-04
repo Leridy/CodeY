@@ -3,6 +3,7 @@ use crate::tools::ToolRegistry;
 use crate::permission::PermissionEngine;
 
 /// Main agent loop that orchestrates LLM calls and tool execution
+#[allow(dead_code)]
 pub struct AgentLoop {
     tool_registry: ToolRegistry,
     permission_engine: PermissionEngine,

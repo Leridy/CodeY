@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct AppConfig {
     pub llm_provider: String,
     pub model: String,
@@ -18,6 +19,7 @@ impl Default for AppConfig {
 }
 
 #[tauri::command]
+#[allow(dead_code)]
 pub async fn get_config() -> Result<AppConfig, String> {
     // TODO: Load from file
     Ok(AppConfig::default())

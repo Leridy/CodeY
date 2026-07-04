@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct AgentMessage {
     pub id: String,
     pub content: String,
@@ -8,6 +9,7 @@ pub struct AgentMessage {
 }
 
 #[tauri::command]
+#[allow(dead_code)]
 pub async fn send_message(message: String) -> Result<AgentMessage, String> {
     // TODO: Implement agent message sending
     Ok(AgentMessage {

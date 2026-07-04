@@ -9,7 +9,7 @@ impl PermissionEngine {
     }
 
     /// Check if a tool call is allowed
-    pub fn check(&self, tool_name: &str, user_level: &str) -> PermissionResult {
+    pub fn check(&self, _tool_name: &str, _user_level: &str) -> PermissionResult {
         // TODO: Implement permission checking
         PermissionResult::NeedApproval
     }

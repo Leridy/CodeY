@@ -1,6 +1,5 @@
-use std::path::PathBuf;
-
 #[tauri::command]
+#[allow(dead_code)]
 pub async fn read_file(path: String) -> Result<String, String> {
     tokio::fs::read_to_string(&path)
         .await
@@ -8,6 +7,7 @@ pub async fn read_file(path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+#[allow(dead_code)]
 pub async fn write_file(path: String, content: String) -> Result<(), String> {
     tokio::fs::write(&path, content)
         .await
