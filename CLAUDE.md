@@ -208,6 +208,14 @@ cat docs/progress.md
 - .claude/skills/protocol-maintainer/SKILL.md       # 协议规范
 ```
 
+### LLM 集成子 Agent
+```
+必须读取：
+- .claude/skills/llm-provider-maintenance/SKILL.md # LLM 提供商维护
+- .claude/skills/llm-provider-maintenance/providers/ # 提供商配置
+- .claude/skills/llm-provider-maintenance/schema/   # 数据库 Schema
+```
+
 ### 前后端通信开发子 Agent
 ```
 必须读取：
