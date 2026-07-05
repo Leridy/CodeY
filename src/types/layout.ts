@@ -24,7 +24,7 @@ export const DEFAULT_PANEL_CONFIG: PanelConfig = {
 
 export const BREAKPOINTS = {
   mobile: 768,
-  tablet: 1280,
+  tablet: 1024,
   desktop: 1280,
 } as const
 

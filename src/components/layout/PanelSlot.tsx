@@ -77,13 +77,13 @@ export function PanelSlot({
     onClose?.()
   }, [panelId, hidePanel, onClose])
 
+  const resizePanel = useLayoutStore((s) => s.resizePanel)
+
   const handleResize = useCallback(
     (newSize: number) => {
-      // Resize is handled by the ResizeHandle via the store
-      // Store the newSize for potential future use
-      void newSize
+      resizePanel(panelId, newSize)
     },
-    []
+    [panelId, resizePanel]
   )
 
   if (!visible) {

@@ -11,3 +11,14 @@ export type {
   DragState,
   SnapGuide,
 } from './grid'
+
+export type {
+  PanelConfig,
+  LayoutMode,
+  ContentMode,
+  ContentPanelState,
+  FileNode,
+  PanelVisibility,
+} from './layout'
+
+export { DEFAULT_PANEL_CONFIG, BREAKPOINTS } from './layout'

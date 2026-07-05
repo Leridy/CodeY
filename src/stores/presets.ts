@@ -2,6 +2,7 @@
  * Built-in Layout Presets
  *
  * Default, Focus, and Wide layout configurations.
+ * All presets use consistent panel IDs: 'explorer', 'content', 'details', 'terminal'.
  */
 
 import type { LayoutPreset } from '../types/grid'
@@ -106,11 +107,11 @@ export const FOCUS_PRESET: LayoutPreset = {
   },
 }
 
-/** Wide mode: chat and editor side by side */
+/** Wide mode: content and details side by side (3-column with explorer) */
 export const WIDE_PRESET: LayoutPreset = {
   id: 'wide',
   name: '宽屏模式',
-  description: '聊天和编辑器左右并排，终端底部',
+  description: '内容和详情左右并排，终端底部',
   builtin: true,
   gridConfig: {
     columns: [
@@ -124,8 +125,8 @@ export const WIDE_PRESET: LayoutPreset = {
     ],
     areas: [
       { panelId: 'explorer', columnStart: 1, columnEnd: 2, rowStart: 1, rowEnd: 2 },
-      { panelId: 'chat', columnStart: 2, columnEnd: 3, rowStart: 1, rowEnd: 2 },
-      { panelId: 'editor', columnStart: 3, columnEnd: 4, rowStart: 1, rowEnd: 2 },
+      { panelId: 'content', columnStart: 2, columnEnd: 3, rowStart: 1, rowEnd: 2 },
+      { panelId: 'details', columnStart: 3, columnEnd: 4, rowStart: 1, rowEnd: 2 },
       { panelId: 'terminal', columnStart: 1, columnEnd: 4, rowStart: 2, rowEnd: 3 },
     ],
   },
@@ -136,16 +137,16 @@ export const WIDE_PRESET: LayoutPreset = {
       position: { panelId: 'explorer', columnStart: 1, columnEnd: 2, rowStart: 1, rowEnd: 2 },
       size: { width: 260, height: 600 },
     },
-    chat: {
+    content: {
       visible: true,
       collapsed: false,
-      position: { panelId: 'chat', columnStart: 2, columnEnd: 3, rowStart: 1, rowEnd: 2 },
+      position: { panelId: 'content', columnStart: 2, columnEnd: 3, rowStart: 1, rowEnd: 2 },
       size: { width: 560, height: 600 },
     },
-    editor: {
+    details: {
       visible: true,
       collapsed: false,
-      position: { panelId: 'editor', columnStart: 3, columnEnd: 4, rowStart: 1, rowEnd: 2 },
+      position: { panelId: 'details', columnStart: 3, columnEnd: 4, rowStart: 1, rowEnd: 2 },
       size: { width: 560, height: 600 },
     },
     terminal: {
