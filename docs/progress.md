@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 3.2.2 工具调用展示完成)
+> 最后更新：2026-07-05 (Phase 3.2.3 会话管理完成)
 
 ## 当前任务
 
-- [ ] Phase 3.2.3 会话管理（SessionSidebar + 会话CRUD + localStorage持久化）
+- [ ] Phase 3.2.4 分支线程（BranchNavigator + 消息分支数据结构 + UI切换）
 
 ## 待解决问题
 
@@ -76,6 +76,15 @@
 - [x] 集成到 MessageBubble（条件渲染工具调用）
 - [x] 代码审查修复（1 个 HIGH 问题：补充集成测试）
 - [x] 单元测试编写（13 个测试，全部通过）
+
+### Phase 3.2.3 会话管理 ✅
+- [x] 实现 SessionSidebar 组件（会话列表、新建、切换、删除）
+- [x] 实现 SessionItem 组件（会话项、双击重命名、hover删除）
+- [x] 实现 SessionSearch 组件（实时搜索、清除）
+- [x] 实现 useSession Hook（会话CRUD操作封装）
+- [x] 集成到 ChatPanel（工具栏、侧边栏切换）
+- [x] 代码审查修复（2 个 HIGH 问题：竞态条件、格式优化）
+- [x] 单元测试编写（30 个测试，全部通过）
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档

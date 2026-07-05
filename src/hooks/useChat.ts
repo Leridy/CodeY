@@ -9,6 +9,14 @@ import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { useChatStore, useSessionStore } from '../stores/chatStore';
 import type { ChatMessage } from '../types/chat';
 
+/**
+ * Get the current active session ID directly from the store.
+ * This avoids stale closure issues when sessionId changes between render and call.
+ */
+function getActiveSessionId(): string | null {
+  return useChatStore.getState().activeSessionId;
+}
+
 export interface UseChatOptions {
   /** Session ID (optional, defaults to activeSessionId) */
   sessionId?: string;
@@ -91,7 +99,10 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
 
   const send = useCallback(
     async (content: string) => {
-      if (!sessionId) {
+      // Read sessionId directly from store to avoid stale closure
+      const currentSessionId = explicitSessionId ?? getActiveSessionId();
+
+      if (!currentSessionId) {
         onError?.(new Error('No active session'));
         return;
       }
@@ -108,18 +119,18 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
 
       try {
         // Add user message (now via useSessionStore)
-        const userMessage = addUserMessage(sessionId, content);
+        const userMessage = addUserMessage(currentSessionId, content);
         onSendComplete?.(userMessage);
 
         // Add assistant message placeholder (returns { message, shouldStartStreaming })
-        const { message: assistantMessage } = addAssistantMessage(sessionId);
+        const { message: assistantMessage } = addAssistantMessage(currentSessionId);
         startStreaming(assistantMessage.id);
 
         // Invoke Tauri command to start agent
         try {
           const { invoke } = await import('@tauri-apps/api/core');
           await invoke('chat:send_message', {
-            sessionId,
+            sessionId: currentSessionId,
             content,
             model: session?.model,
             provider: session?.provider,
@@ -132,8 +143,8 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           mockTimeoutRef.current = setTimeout(() => {
             mockTimeoutRef.current = null;
             const mockResponse = `I received your message: "${content}"\n\nThis is a mock response. In production, this would come from the AI agent.`;
-            appendStreamContent(sessionId, assistantMessage.id, mockResponse);
-            finalizeMessage(sessionId, assistantMessage.id);
+            appendStreamContent(currentSessionId, assistantMessage.id, mockResponse);
+            finalizeMessage(currentSessionId, assistantMessage.id);
             finalizeStreaming();
             onStreamComplete?.({
               ...assistantMessage,
@@ -147,7 +158,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       }
     },
     [
-      sessionId,
+      explicitSessionId,
       isStreaming,
       session,
       addUserMessage,

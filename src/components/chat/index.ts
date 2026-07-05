@@ -28,3 +28,12 @@ export type { ToolCallCardProps } from './ToolCallCard';
 
 export { ToolCallList } from './ToolCallList';
 export type { ToolCallListProps } from './ToolCallList';
+
+export { SessionSidebar } from './SessionSidebar';
+export type { SessionSidebarProps } from './SessionSidebar';
+
+export { SessionItem } from './SessionItem';
+export type { SessionItemProps } from './SessionItem';
+
+export { SessionSearch } from './SessionSearch';
+export type { SessionSearchProps } from './SessionSearch';
