@@ -12,12 +12,12 @@
 
 ## 维护任务
 
-### 花水博客同步 Skill ✅
+### 花水博客发布 Skill ✅
 - [x] 创建 huashui-blog-sync skill（2026-07-05）
-- [x] 实现 playwright 同步脚本
+- [x] 实现 playwright 发布脚本（本地 Markdown → 花水网站）
 - [x] 支持连接现有 Chrome 实例（保留登录状态）
-- [x] 同步已有博客文章：hello-world（我重构了划水网）
-- [x] 输出目录：docs/blog/
+- [x] 支持 YAML frontmatter 和引用格式元数据
+- [x] 支持单篇发布和批量发布
 - [x] 已添加到 .gitignore
 
 ## 已完成任务
