@@ -1,22 +1,102 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Agent Loop 完成)
+> 最后更新：2026-07-05 (Phase 2.5 集成实现完成)
 
 ## 当前任务
 
-- [ ] 确定下一步任务 (Phase 2.5)
+- [ ] Phase 3 待规划
 
-## 维护任务
+## 待解决问题
 
+- [CRITICAL-3] sandbox_manager 字段从未使用 - 保留，Phase 3 集成
+
+## 已完成任务
+
+### Phase 2.5 集成实现 ✅
+- [x] Phase 2.5.1: PathValidator 重命名（SandboxManager → PathValidator）
+- [x] Phase 2.5.2: FileExecutor 实现（文件读写 + PathValidator 集成）
+- [x] Phase 2.5.3: ShellExecutor 实现（命令执行 + 危险命令拦截 + 超时）
+- [x] Phase 2.5.4: ToolOrchestrator 沙箱集成（路径校验）
+- [x] Phase 2.5.5: Anthropic Tool Use 实现（tool_use content block 解析）
+- [x] Phase 2.5.6: 流式响应集成（streaming/non-streaming 双模式）
+- [x] 新增 36 个测试，全部通过，零回归
+
+### Phase 2.5 Spec 创建 ✅
+- [x] 创建 design.md 设计文档
+- [x] 创建 api.md API 文档
+- [x] 创建 test.md 测试计划
+- [x] 头脑风暴确定实现方案
+
+### Phase 2 整体 Review ✅
+- [x] 审查所有 Phase 2 模块
+- [x] 识别 3 个 CRITICAL 问题
+- [x] 修复 CRITICAL 问题
+- [x] 提交修复代码
+
+### Phase 2.2 权限系统 Spec 补齐 ✅
+- [x] 创建 design.md 设计文档
+- [x] 创建 api.md API 文档
+- [x] 创建 test.md 测试计划
+- [x] 修复路径遍历漏洞（添加 normalize_path）
+- [x] 修复 RuleEngine 未连接到 PermissionEngine（添加 load_rules 方法）
+- [x] 将 Tool.required_permission 从 String 改为 PermissionLevel 枚举
+- [x] 36 个测试全部通过
+
+### Phase 2.1 LLM Provider Spec 补齐 ✅
+- [x] 补齐 design.md 设计文档
+- [x] 补齐 api.md API 文档
+- [x] 补齐 test.md 测试文档
+- [x] 修复 CRITICAL: API Key 空值验证
+- [x] 修复 HIGH: ChatRequest.stream 字段注释
+- [x] 修复 HIGH: models 表注释说明
+- [x] 修复 HIGH: ProviderConfig 字段注释说明
+- [x] 修复 MEDIUM: Anthropic 静默忽略 tools 警告日志
+- [x] 75 个测试全部通过
+
+### Phase 2.4 Agent Loop 实现 ✅
+- [x] 实现 AgentLoop 主循环 (run/process_message/handle_tool_call)
+- [x] 实现 AgentContext 上下文管理（支持 tool_calls）
+- [x] 实现 StreamManager 流式管理器
+- [x] 实现 FunctionCallingAdapter/ToolUseAdapter 工具调用适配器
+- [x] 集成 ToolOrchestrator 实现真正的工具执行
+- [x] 为 PermissionLevel 实现 FromStr trait
+- [x] 为 Tool 结构体添加 parameters 字段
+- [x] 添加 284 个测试，全部通过
+- [x] 生成 Agent Loop 设计文档和博客
+
+### Phase 2.3 沙箱系统实现 ✅
+- [x] 实现 SandboxManager trait，支持 macOS Seatbelt 和 Linux bubblewrap
+- [x] 实现 SandboxConfig、NetworkPolicy、ResourceLimits 配置类型
+- [x] 实现路径遍历检测加固（使用 canonicalize）
+- [x] 实现真正的超时中断（使用 tokio::time::timeout）
+- [x] 实现策略文件生成转义（防止注入攻击）
+- [x] 添加 20 个测试用例，全部通过
+- [x] 生成 Windows 沙箱分析博客和研究文档
+
+### Phase 2.2 权限系统实现 ✅
+- [x] 实现 7 级权限模型 (ReadOnly → FullAccess)
+- [x] 实现规则引擎，支持 DSL 语法解析
+- [x] 实现沙箱管理器，支持路径验证
+- [x] 添加 28 个测试用例
+- [x] 修复安全问题: 默认权限级别从 FullAccess 改为 ReadOnly
+
+### Phase 2.1 LLM 集成实现 ✅
+- [x] 实现 LlmProvider trait
+- [x] 实现 OpenAI Provider
+- [x] 实现 Anthropic Provider
+- [x] 实现 Ollama Provider
+- [x] 实现 ProviderRegistry
+- [x] 实现 SQLite 数据库加载
+- [x] 添加 75 个测试用例
+
+### 维护任务 ✅
 - [x] 项目维护：移除 target/ 目录出版本控制 (2026-07-05)
 - [x] 项目维护：修复 README.md 占位符链接 (2026-07-05)
 - [x] 项目维护：创建 CONTRIBUTING.md 贡献指南 (2026-07-05)
 - [x] 项目维护：创建 CHANGELOG.md 变更日志 (2026-07-05)
 - [x] 项目维护：添加 GitHub Issue/PR 模板 (2026-07-05)
 
-## 已完成任务
-
-- [x] Phase 2.1 LLM Provider Spec 补齐 (2026-07-05)
+### 基础架构 ✅
 - [x] 需求收集与头脑风暴 (2026-07-05)
 - [x] 技术架构设计 (2026-07-05)
 - [x] 协议设计 (2026-07-05)
@@ -51,48 +131,25 @@
 - [x] Phase 1 代码审查 (2026-07-05)
 - [x] Phase 1 问题修复 (2026-07-05)
 - [x] LLM 提供商维护 skill (2026-07-05)
-- [x] Phase 2.1 LLM 集成实现 (2026-07-05)
-- [x] Phase 2.2 权限系统实现 (2026-07-05)
-- [x] Phase 2.3 沙箱系统实现 (2026-07-05)
-- [x] Phase 2.4 Agent Loop 实现 (2026-07-05)
 
-## Phase 2.1 LLM Provider Spec 补齐 ✅
-- [x] 补齐 design.md 设计文档
-- [x] 补齐 api.md API 文档
-- [x] 补齐 test.md 测试文档
-- [x] 修复 CRITICAL: API Key 空值验证
-- [x] 修复 HIGH: ChatRequest.stream 字段注释
-- [x] 修复 HIGH: models 表注释说明
-- [x] 修复 HIGH: ProviderConfig 字段注释说明
-- [x] 修复 MEDIUM: Anthropic 静默忽略 tools 警告日志
-- [x] 75 个测试全部通过
+## Spec 文档状态
 
-## Phase 2.4 Agent Loop 实现 ✅
-- [x] 实现 AgentLoop 主循环 (run/process_message/handle_tool_call)
-- [x] 实现 AgentContext 上下文管理（支持 tool_calls）
-- [x] 实现 StreamManager 流式管理器
-- [x] 实现 FunctionCallingAdapter/ToolUseAdapter 工具调用适配器
-- [x] 集成 ToolOrchestrator 实现真正的工具执行
-- [x] 为 PermissionLevel 实现 FromStr trait
-- [x] 为 Tool 结构体添加 parameters 字段
-- [x] 添加 284 个测试，全部通过
-- [x] 生成 Agent Loop 设计文档和博客
+| Phase | 模块 | design.md | api.md | test.md | 状态 |
+|-------|------|-----------|--------|---------|------|
+| 2.1 | LLM Provider | ✅ | ✅ | ✅ | 完成 |
+| 2.2 | 权限系统 | ✅ | ✅ | ✅ | 完成 |
+| 2.3 | 沙箱系统 | ✅ | ✅ | ✅ | 完成 |
+| 2.4 | Agent Loop | ✅ | ✅ | ✅ | 完成 |
+| 2.5 | 集成实现 | ✅ | ✅ | ✅ | 完成 |
 
-## Phase 2.3 沙箱系统实现 ✅
-- [x] 实现 SandboxManager trait，支持 macOS Seatbelt 和 Linux bubblewrap
-- [x] 实现 SandboxConfig、NetworkPolicy、ResourceLimits 配置类型
-- [x] 实现路径遍历检测加固（使用 canonicalize）
-- [x] 实现真正的超时中断（使用 tokio::time::timeout）
-- [x] 实现策略文件生成转义（防止注入攻击）
-- [x] 添加 20 个测试用例，全部通过
-- [x] 生成 Windows 沙箱分析博客和研究文档
+## 博客文章
 
-## Phase 2.2 权限系统实现 ✅
-- [x] 实现 7 级权限模型 (ReadOnly → FullAccess)
-- [x] 实现规则引擎，支持 DSL 语法解析
-- [x] 实现沙箱管理器，支持路径验证
-- [x] 添加 28 个测试用例
-- [x] 修复安全问题: 默认权限级别从 FullAccess 改为 ReadOnly
+| 文档 | 状态 | 大小 | 说明 |
+|------|------|------|------|
+| [Blog] 2026-07-05-llm-integration.md | ✅ | 53KB | LLM 集成博客 |
+| [Blog] 2026-07-05-permission-system.md | ✅ | 36KB | 权限系统博客 |
+| [Blog] 2026-07-05-windows-sandbox-analysis.md | ✅ | 37KB | Windows 沙箱分析 |
+| [Blog] 2026-07-05-agent-loop.md | ✅ | 37KB | Agent Loop 博客 |
 
 ## Skill 创建状态
 
@@ -109,21 +166,6 @@
 
 **总计：124 个文件**
 
-## 设计文档状态
-
-| 文档 | 状态 | 大小 | 说明 |
-|------|------|------|------|
-| design-decisions.md | ✅ 完成 | 4.4KB | 设计决策记录 |
-| architecture.md | ✅ 完成 | 13KB | 架构设计文档 |
-| protocol-design.md | ✅ 完成 | 21KB | 协议设计文档 |
-| permission-model.md | ✅ 完成 | 32KB | 权限模型文档 |
-| harness-vs-sdd.md | ✅ 完成 | 8.3KB | Harness vs SDD 说明 |
-| complete-design-decisions.md | ✅ 完成 | 24KB | 完整设计决策 |
-| protocol-design-blog.md | ✅ 完成 | 34KB | 协议设计博客 |
-| phase1-code-review.md | ✅ 完成 | 8.9KB | Phase 1 代码审查报告 |
-
-**总计：146KB 设计文档**
-
 ## 里程碑
 
 | 里程碑 | 目标日期 | 状态 | 说明 |
@@ -132,7 +174,7 @@
 | M2: 核心协议 | Week 4 | ✅ 完成 | JSON-RPC 实现 |
 | M3: Agent 核心 | Week 8 | ✅ 完成 | Agent Loop、工具系统 |
 | M4: 权限系统 | Week 10 | ✅ 完成 | 权限引擎、规则引擎 |
-| M5: 工具实现 | Week 14 | ⏳ 待开始 | 所有工具完成 |
+| M5: 工具实现 | Week 14 | ✅ 完成 | Phase 2.5 集成实现 |
 | M6: 前端 UI | Week 18 | ⏳ 待开始 | IDE 布局、组件 |
 | M7: 集成测试 | Week 20 | ⏳ 待开始 | E2E 测试、性能测试 |
 | M8: 发布 | Week 22 | ⏳ 待开始 | v1.0.0 发布 |

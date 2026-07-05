@@ -159,11 +159,20 @@ impl AgentLoop {
             messages,
             temperature: self.config.temperature,
             max_tokens: self.config.max_tokens,
-            stream: false,
+            stream: self.config.enable_streaming,
             tools: if tools.is_empty() { None } else { Some(tools) },
         };
 
-        debug!("发送 LLM 请求，模型: {}", self.config.model);
+        if self.config.enable_streaming {
+            self.process_streaming_message(request).await
+        } else {
+            self.process_non_streaming_message(request).await
+        }
+    }
+
+    /// 非流式 LLM 调用
+    async fn process_non_streaming_message(&mut self, request: ChatRequest) -> Result<AgentResponse> {
+        debug!("发送 LLM 请求（非流式），模型: {}", self.config.model);
 
         // 调用 LLM
         let response = self.llm_provider.chat(request).await?;
@@ -186,6 +195,41 @@ impl AgentLoop {
             tool_calls,
             is_final,
             usage: response.usage,
+        })
+    }
+
+    /// 流式 LLM 调用
+    ///
+    /// 通过 ChatStream 接收 chunks，累积完整响应
+    /// 流式模式下工具调用暂不支持（StreamChunk 不包含工具调用信息）
+    async fn process_streaming_message(&mut self, request: ChatRequest) -> Result<AgentResponse> {
+        debug!("发送 LLM 请求（流式），模型: {}", self.config.model);
+
+        let mut stream = self.llm_provider.stream_chat(request).await?;
+
+        let mut content = String::new();
+        while let Some(chunk) = stream.recv().await {
+            if !chunk.delta.is_empty() {
+                content.push_str(&chunk.delta);
+                debug!("收到流式 chunk: {} 字符", chunk.delta.len());
+            }
+            if chunk.finish_reason.is_some() {
+                debug!("流式响应完成，原因: {:?}", chunk.finish_reason);
+                break;
+            }
+        }
+
+        debug!("流式响应累积完成，总长度: {} 字符", content.len());
+
+        Ok(AgentResponse {
+            content,
+            tool_calls: Vec::new(),
+            is_final: true,
+            usage: Usage {
+                prompt_tokens: 0,
+                completion_tokens: 0,
+                total_tokens: 0,
+            },
         })
     }
 
@@ -343,7 +387,7 @@ mod tests {
     use super::*;
     use crate::agent::context::Context;
     use crate::agent::types::AgentLoopConfig;
-    use crate::llm::{ChatRequest, ChatResponse, ChatStream, Model, ToolCall};
+    use crate::llm::{ChatRequest, ChatResponse, ChatStream, Model, StreamChunk, ToolCall};
     use crate::permission::PermissionLevel;
     use crate::tools::ToolRegistry;
     use async_trait::async_trait;
@@ -353,6 +397,7 @@ mod tests {
     // Mock LLM Provider
     struct MockLlmProvider {
         responses: std::sync::Mutex<Vec<ChatResponse>>,
+        stream_chunks: std::sync::Mutex<Vec<StreamChunk>>,
         call_count: std::sync::atomic::AtomicUsize,
     }
 
@@ -360,6 +405,15 @@ mod tests {
         fn new(responses: Vec<ChatResponse>) -> Self {
             Self {
                 responses: std::sync::Mutex::new(responses),
+                stream_chunks: std::sync::Mutex::new(Vec::new()),
+                call_count: std::sync::atomic::AtomicUsize::new(0),
+            }
+        }
+
+        fn with_stream_chunks(chunks: Vec<StreamChunk>) -> Self {
+            Self {
+                responses: std::sync::Mutex::new(Vec::new()),
+                stream_chunks: std::sync::Mutex::new(chunks),
                 call_count: std::sync::atomic::AtomicUsize::new(0),
             }
         }
@@ -398,7 +452,17 @@ mod tests {
         }
 
         async fn stream_chat(&self, _request: ChatRequest) -> Result<ChatStream> {
-            let (_tx, rx) = tokio::sync::mpsc::channel(16);
+            let (tx, rx) = tokio::sync::mpsc::channel(16);
+            let chunks: Vec<StreamChunk> = self.stream_chunks.lock().unwrap().drain(..).collect();
+
+            tokio::spawn(async move {
+                for chunk in chunks {
+                    if tx.send(chunk).await.is_err() {
+                        break;
+                    }
+                }
+            });
+
             Ok(ChatStream::new(rx))
         }
 
@@ -679,5 +743,113 @@ mod tests {
         assert_eq!(config.max_tokens, Some(4096));
         assert!(config.system_prompt.is_none());
         assert!(!config.enable_streaming);
+    }
+
+    // -------------------------------------------------------
+    // 流式模式测试
+    // -------------------------------------------------------
+
+    #[tokio::test]
+    async fn test_streaming_mode_accumulates_chunks() {
+        let chunks = vec![
+            StreamChunk {
+                delta: "Hello, ".to_string(),
+                finish_reason: None,
+            },
+            StreamChunk {
+                delta: "world!".to_string(),
+                finish_reason: Some("stop".to_string()),
+            },
+        ];
+
+        let mock_provider = MockLlmProvider::with_stream_chunks(chunks);
+
+        let config = AgentLoopConfig {
+            enable_streaming: true,
+            ..create_test_config()
+        };
+
+        let mut agent = AgentLoop::new(
+            Arc::new(mock_provider),
+            ToolRegistry::new(),
+            PermissionEngine::new(PermissionLevel::FullAccess),
+            create_test_sandbox_manager(),
+            create_test_context(),
+            config,
+        );
+
+        let response = agent.run("Hello").await.unwrap();
+
+        assert_eq!(response.content, "Hello, world!");
+        assert!(response.tool_calls.is_empty());
+        assert!(response.is_final);
+    }
+
+    #[tokio::test]
+    async fn test_streaming_mode_empty_stream() {
+        let mock_provider = MockLlmProvider::with_stream_chunks(vec![]);
+
+        let config = AgentLoopConfig {
+            enable_streaming: true,
+            ..create_test_config()
+        };
+
+        let mut agent = AgentLoop::new(
+            Arc::new(mock_provider),
+            ToolRegistry::new(),
+            PermissionEngine::new(PermissionLevel::FullAccess),
+            create_test_sandbox_manager(),
+            create_test_context(),
+            config,
+        );
+
+        let response = agent.run("Hello").await.unwrap();
+
+        assert_eq!(response.content, "");
+        assert!(response.tool_calls.is_empty());
+        assert!(response.is_final);
+    }
+
+    #[tokio::test]
+    async fn test_streaming_mode_multiple_chunks() {
+        let chunks = vec![
+            StreamChunk {
+                delta: "The ".to_string(),
+                finish_reason: None,
+            },
+            StreamChunk {
+                delta: "answer ".to_string(),
+                finish_reason: None,
+            },
+            StreamChunk {
+                delta: "is ".to_string(),
+                finish_reason: None,
+            },
+            StreamChunk {
+                delta: "42.".to_string(),
+                finish_reason: Some("stop".to_string()),
+            },
+        ];
+
+        let mock_provider = MockLlmProvider::with_stream_chunks(chunks);
+
+        let config = AgentLoopConfig {
+            enable_streaming: true,
+            ..create_test_config()
+        };
+
+        let mut agent = AgentLoop::new(
+            Arc::new(mock_provider),
+            ToolRegistry::new(),
+            PermissionEngine::new(PermissionLevel::FullAccess),
+            create_test_sandbox_manager(),
+            create_test_context(),
+            config,
+        );
+
+        let response = agent.run("What is the answer?").await.unwrap();
+
+        assert_eq!(response.content, "The answer is 42.");
+        assert!(response.is_final);
     }
 }

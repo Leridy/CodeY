@@ -2,7 +2,7 @@
 
 use super::engine::{PermissionEngine, PermissionLevel, PermissionResult, PermissionRule, RuleAction};
 use super::rules::RuleEngine;
-use super::sandbox::SandboxManager;
+use super::sandbox::PathValidator;
 use std::path::PathBuf;
 use tempfile::TempDir;
 
@@ -303,13 +303,13 @@ fn rule_engine_load_nonexistent_file() {
 }
 
 // ============================================================
-// SandboxManager tests
+// PathValidator tests
 // ============================================================
 
 #[test]
 fn sandbox_path_under_working_dir_is_allowed() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     let path = tmp.path().join("src/main.rs");
     assert!(sandbox.is_path_allowed(&path));
@@ -318,7 +318,7 @@ fn sandbox_path_under_working_dir_is_allowed() {
 #[test]
 fn sandbox_path_outside_working_dir_is_denied() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     assert!(!sandbox.is_path_allowed(PathBuf::from("/etc/passwd").as_path()));
 }
@@ -326,7 +326,7 @@ fn sandbox_path_outside_working_dir_is_denied() {
 #[test]
 fn sandbox_allowed_path_override() {
     let tmp = TempDir::new().unwrap();
-    let mut sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let mut sandbox = PathValidator::new(tmp.path().to_path_buf());
     sandbox.allow_path(PathBuf::from("/tmp/shared"));
 
     assert!(sandbox.is_path_allowed(PathBuf::from("/tmp/shared/data.txt").as_path()));
@@ -335,7 +335,7 @@ fn sandbox_allowed_path_override() {
 #[test]
 fn sandbox_denied_path_override() {
     let tmp = TempDir::new().unwrap();
-    let mut sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let mut sandbox = PathValidator::new(tmp.path().to_path_buf());
     sandbox.deny_path(tmp.path().join("secrets"));
 
     assert!(!sandbox.is_path_allowed(tmp.path().join("secrets/key.pem").as_path()));
@@ -344,7 +344,7 @@ fn sandbox_denied_path_override() {
 #[test]
 fn sandbox_denied_takes_precedence_over_allowed() {
     let tmp = TempDir::new().unwrap();
-    let mut sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let mut sandbox = PathValidator::new(tmp.path().to_path_buf());
     let sensitive = tmp.path().join("sensitive");
     sandbox.allow_path(tmp.path().to_path_buf());
     sandbox.deny_path(sensitive.clone());
@@ -355,7 +355,7 @@ fn sandbox_denied_takes_precedence_over_allowed() {
 #[test]
 fn sandbox_resolve_relative_path() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     let resolved = sandbox.resolve_path("src/main.rs").unwrap();
     assert_eq!(resolved, tmp.path().join("src/main.rs"));
@@ -364,7 +364,7 @@ fn sandbox_resolve_relative_path() {
 #[test]
 fn sandbox_resolve_absolute_path_allowed() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     let target = tmp.path().join("src/main.rs");
     let resolved = sandbox.resolve_path(target.to_str().unwrap()).unwrap();
@@ -374,7 +374,7 @@ fn sandbox_resolve_absolute_path_allowed() {
 #[test]
 fn sandbox_resolve_absolute_path_denied() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     let result = sandbox.resolve_path("/etc/passwd");
     assert!(result.is_err());
@@ -383,7 +383,7 @@ fn sandbox_resolve_absolute_path_denied() {
 #[test]
 fn sandbox_resolve_relative_path_outside_denied() {
     let tmp = TempDir::new().unwrap();
-    let sandbox = SandboxManager::new(tmp.path().to_path_buf());
+    let sandbox = PathValidator::new(tmp.path().to_path_buf());
 
     let result = sandbox.resolve_path("/etc/shadow");
     assert!(result.is_err());

@@ -7,4 +7,4 @@ mod tests;
 
 pub use engine::{PermissionEngine, PermissionLevel, PermissionResult, PermissionRule, RuleAction};
 pub use rules::RuleEngine;
-pub use sandbox::SandboxManager;
+pub use sandbox::PathValidator;

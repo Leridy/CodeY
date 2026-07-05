@@ -1,21 +1,20 @@
-//! Sandbox manager for enforcing file system restrictions.
+//! Path validator for enforcing file system path restrictions.
 
 use anyhow::Result;
 use std::path::{Component, Path, PathBuf};
 
-/// Sandbox manager that enforces file system path restrictions.
+/// 路径校验器，用于执行文件系统路径限制。
 ///
-/// Paths are checked against allowed/denied lists. Denied paths take
-/// precedence over allowed paths. Paths under the working directory
-/// are allowed by default.
-pub struct SandboxManager {
+/// 路径通过允许/拒绝列表进行检查。拒绝路径优先于允许路径。
+/// 工作目录下的路径默认允许。
+pub struct PathValidator {
     working_directory: PathBuf,
     allowed_paths: Vec<PathBuf>,
     denied_paths: Vec<PathBuf>,
 }
 
-impl SandboxManager {
-    /// Create a new sandbox manager with the given working directory.
+impl PathValidator {
+    /// Create a new path validator with the given working directory.
     pub fn new(working_directory: PathBuf) -> Self {
         Self {
             working_directory,
