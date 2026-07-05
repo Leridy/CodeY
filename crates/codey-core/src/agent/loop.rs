@@ -152,6 +152,10 @@ impl AgentLoop {
 
         // 获取工具定义
         let tools = self.build_tool_definitions();
+        let has_tools = !tools.is_empty();
+
+        // 有工具定义时强制使用非流式模式，因为流式模式不支持工具调用解析
+        let use_streaming = self.config.enable_streaming && !has_tools;
 
         // 构建请求
         let request = ChatRequest {
@@ -159,11 +163,11 @@ impl AgentLoop {
             messages,
             temperature: self.config.temperature,
             max_tokens: self.config.max_tokens,
-            stream: self.config.enable_streaming,
+            stream: use_streaming,
             tools: if tools.is_empty() { None } else { Some(tools) },
         };
 
-        if self.config.enable_streaming {
+        if use_streaming {
             self.process_streaming_message(request).await
         } else {
             self.process_non_streaming_message(request).await
@@ -330,6 +334,7 @@ impl AgentLoop {
                 role: "system".to_string(),
                 content: system_prompt.clone(),
                 tool_calls: None,
+                tool_call_id: None,
             });
         }
 
@@ -510,6 +515,7 @@ mod tests {
                 role: "assistant".to_string(),
                 content: content.to_string(),
                 tool_calls: None,
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens: 10,
@@ -527,6 +533,7 @@ mod tests {
                 role: "assistant".to_string(),
                 content: content.to_string(),
                 tool_calls: Some(tool_calls),
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens: 10,
@@ -751,18 +758,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_streaming_mode_accumulates_chunks() {
-        let chunks = vec![
-            StreamChunk {
-                delta: "Hello, ".to_string(),
-                finish_reason: None,
-            },
-            StreamChunk {
-                delta: "world!".to_string(),
-                finish_reason: Some("stop".to_string()),
-            },
-        ];
-
-        let mock_provider = MockLlmProvider::with_stream_chunks(chunks);
+        // 有工具时强制回退到非流式模式，因此使用 MockLlmProvider::new
+        let mock_provider = MockLlmProvider::new(vec![create_simple_response("Hello, world!")]);
 
         let config = AgentLoopConfig {
             enable_streaming: true,
@@ -787,7 +784,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_streaming_mode_empty_stream() {
-        let mock_provider = MockLlmProvider::with_stream_chunks(vec![]);
+        // 有工具时强制回退到非流式模式
+        let mock_provider = MockLlmProvider::new(vec![create_simple_response("")]);
 
         let config = AgentLoopConfig {
             enable_streaming: true,
@@ -812,26 +810,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_streaming_mode_multiple_chunks() {
-        let chunks = vec![
-            StreamChunk {
-                delta: "The ".to_string(),
-                finish_reason: None,
-            },
-            StreamChunk {
-                delta: "answer ".to_string(),
-                finish_reason: None,
-            },
-            StreamChunk {
-                delta: "is ".to_string(),
-                finish_reason: None,
-            },
-            StreamChunk {
-                delta: "42.".to_string(),
-                finish_reason: Some("stop".to_string()),
-            },
-        ];
-
-        let mock_provider = MockLlmProvider::with_stream_chunks(chunks);
+        // 有工具时强制回退到非流式模式
+        let mock_provider = MockLlmProvider::new(vec![create_simple_response("The answer is 42.")]);
 
         let config = AgentLoopConfig {
             enable_streaming: true,

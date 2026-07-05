@@ -68,6 +68,9 @@ pub struct Message {
     pub role: String,
     pub content: String,
     pub tool_calls: Option<Vec<ToolCall>>,
+    /// 工具调用 ID（仅 tool 角色消息，用于关联结果）
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
 }
 
 /// Tool definition.
@@ -188,6 +191,7 @@ mod tests {
             role: "user".to_string(),
             content: "Hello, world!".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
 
         assert_eq!(msg.role, "user");
@@ -207,6 +211,7 @@ mod tests {
             role: "assistant".to_string(),
             content: String::new(),
             tool_calls: Some(vec![tool_call]),
+            tool_call_id: None,
         };
 
         assert_eq!(msg.role, "assistant");
@@ -220,6 +225,7 @@ mod tests {
             role: "user".to_string(),
             content: "test content".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
 
         let json_str = serde_json::to_string(&msg).unwrap();
@@ -278,6 +284,7 @@ mod tests {
                 role: "user".to_string(),
                 content: "Hello".to_string(),
                 tool_calls: None,
+                tool_call_id: None,
             }],
             temperature: Some(0.7),
             max_tokens: Some(1024),
@@ -320,6 +327,7 @@ mod tests {
                 role: "user".to_string(),
                 content: "Hi".to_string(),
                 tool_calls: None,
+                tool_call_id: None,
             }],
             temperature: Some(0.5),
             max_tokens: Some(256),
@@ -349,6 +357,7 @@ mod tests {
                 role: "assistant".to_string(),
                 content: "Hello! How can I help?".to_string(),
                 tool_calls: None,
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens: 10,
@@ -371,6 +380,7 @@ mod tests {
                 role: "assistant".to_string(),
                 content: "Reply".to_string(),
                 tool_calls: None,
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens: 5,

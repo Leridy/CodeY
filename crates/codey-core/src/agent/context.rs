@@ -152,6 +152,7 @@ impl Context {
                 role: msg.role.clone(),
                 content: msg.content.clone(),
                 tool_calls: msg.tool_calls.clone(),
+                tool_call_id: msg.tool_call_id.clone(),
             })
             .collect()
     }

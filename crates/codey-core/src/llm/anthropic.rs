@@ -69,7 +69,7 @@ struct AnthropicToolDefinition {
 #[derive(Debug, Serialize, Deserialize)]
 struct AnthropicMessage {
     role: String,
-    content: String,
+    content: serde_json::Value,
 }
 
 #[derive(Debug, Deserialize)]
@@ -125,10 +125,28 @@ struct AnthropicStreamUsage {
 }
 
 /// Convert internal Message to Anthropic wire format.
+///
+/// - 普通消息：content 为字符串
+/// - 工具结果消息（role="tool"）：转换为 user 消息 + tool_result content block 数组
 fn to_anthropic_message(msg: &Message) -> AnthropicMessage {
-    AnthropicMessage {
-        role: msg.role.clone(),
-        content: msg.content.clone(),
+    if msg.role == "tool" {
+        // Anthropic 要求工具结果以 user 消息 + content block 数组形式发送
+        let tool_use_id = msg.tool_call_id.clone().unwrap_or_default();
+        AnthropicMessage {
+            role: "user".to_string(),
+            content: serde_json::json!([
+                {
+                    "type": "tool_result",
+                    "tool_use_id": tool_use_id,
+                    "content": msg.content
+                }
+            ]),
+        }
+    } else {
+        AnthropicMessage {
+            role: msg.role.clone(),
+            content: serde_json::Value::String(msg.content.clone()),
+        }
     }
 }
 
@@ -259,6 +277,7 @@ impl LlmProvider for AnthropicProvider {
                 role: "assistant".to_string(),
                 content,
                 tool_calls,
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens: anthropic_response.usage.input_tokens,
@@ -433,10 +452,29 @@ mod tests {
             role: "user".to_string(),
             content: "Hello".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
         let anthropic_msg = to_anthropic_message(&msg);
         assert_eq!(anthropic_msg.role, "user");
-        assert_eq!(anthropic_msg.content, "Hello");
+        assert_eq!(anthropic_msg.content, serde_json::Value::String("Hello".to_string()));
+    }
+
+    #[test]
+    fn test_to_anthropic_message_tool_result() {
+        let msg = Message {
+            role: "tool".to_string(),
+            content: "file content here".to_string(),
+            tool_calls: None,
+            tool_call_id: Some("toolu_abc".to_string()),
+        };
+        let anthropic_msg = to_anthropic_message(&msg);
+        // 工具结果转换为 user 消息 + tool_result content block
+        assert_eq!(anthropic_msg.role, "user");
+        let content_arr = anthropic_msg.content.as_array().unwrap();
+        assert_eq!(content_arr.len(), 1);
+        assert_eq!(content_arr[0]["type"], "tool_result");
+        assert_eq!(content_arr[0]["tool_use_id"], "toolu_abc");
+        assert_eq!(content_arr[0]["content"], "file content here");
     }
 
     #[test]

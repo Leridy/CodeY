@@ -192,6 +192,7 @@ impl LlmProvider for OllamaProvider {
                 role: "assistant".to_string(),
                 content: ollama_response.message.content,
                 tool_calls: None,
+                tool_call_id: None,
             },
             usage: Usage {
                 prompt_tokens,
@@ -339,6 +340,7 @@ mod tests {
             role: "user".to_string(),
             content: "Hello".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
         let ollama_msg = to_ollama_message(&msg);
         assert_eq!(ollama_msg.role, "user");

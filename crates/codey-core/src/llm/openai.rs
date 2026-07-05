@@ -197,6 +197,7 @@ fn from_openai_message(msg: &OpenAiMessage) -> Message {
                 })
                 .collect()
         }),
+        tool_call_id: None,
     }
 }
 
@@ -448,6 +449,7 @@ mod tests {
             role: "user".to_string(),
             content: "Hello".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
         let openai_msg = to_openai_message(&msg);
         assert_eq!(openai_msg.role, "user");
@@ -461,6 +463,7 @@ mod tests {
             role: "assistant".to_string(),
             content: String::new(),
             tool_calls: None,
+            tool_call_id: None,
         };
         let openai_msg = to_openai_message(&msg);
         assert!(openai_msg.content.is_none());
@@ -472,6 +475,7 @@ mod tests {
             role: "user".to_string(),
             content: "test".to_string(),
             tool_calls: None,
+            tool_call_id: None,
         };
         let openai_msg = to_openai_message(&msg);
         let restored = from_openai_message(&openai_msg);
