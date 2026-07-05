@@ -1,6 +1,6 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 2.5 集成实现 + 代码审查修复完成)
+> 最后更新：2026-07-05 (Phase 2.5 全部完成，代码已推送)
 
 ## 当前任务
 
@@ -152,6 +152,7 @@
 | [Blog] 2026-07-05-permission-system.md | ✅ | 36KB | 权限系统博客 |
 | [Blog] 2026-07-05-windows-sandbox-analysis.md | ✅ | 37KB | Windows 沙箱分析 |
 | [Blog] 2026-07-05-agent-loop.md | ✅ | 37KB | Agent Loop 博客 |
+| [Blog] 2026-07-05-phase2.5-integration.md | ✅ | 28KB | Phase 2.5 集成博客 |
 
 ## Skill 创建状态
 
@@ -177,7 +178,7 @@
 | M3: Agent 核心 | Week 8 | ✅ 完成 | Agent Loop、工具系统 |
 | M4: 权限系统 | Week 10 | ✅ 完成 | 权限引擎、规则引擎 |
 | M5: 工具实现 | Week 14 | ✅ 完成 | Phase 2.5 集成实现 |
-| M6: 前端 UI | Week 18 | ⏳ 待开始 | IDE 布局、组件 |
+| M6: 前端 UI | Week 18 | 🔄 进行中 | Phase 3 待规划 |
 | M7: 集成测试 | Week 20 | ⏳ 待开始 | E2E 测试、性能测试 |
 | M8: 发布 | Week 22 | ⏳ 待开始 | v1.0.0 发布 |
 
