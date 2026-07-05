@@ -22,3 +22,9 @@ export type { StreamIndicatorProps } from './StreamIndicator';
 
 export { EmptyState } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
+
+export { ToolCallCard } from './ToolCallCard';
+export type { ToolCallCardProps } from './ToolCallCard';
+
+export { ToolCallList } from './ToolCallList';
+export type { ToolCallListProps } from './ToolCallList';

@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 3.2.1 基础对话实现完成)
+> 最后更新：2026-07-05 (Phase 3.2.2 工具调用展示完成)
 
 ## 当前任务
 
-- [ ] Phase 3.2.2 工具调用展示（ToolCallCard组件 + 工具调用状态跟踪）
+- [ ] Phase 3.2.3 会话管理（SessionSidebar + 会话CRUD + localStorage持久化）
 
 ## 待解决问题
 
@@ -69,6 +69,13 @@
 - [x] 代码审查修复（3 个 HIGH 问题：内存泄漏、XSS防护、跨Store依赖）
 - [x] 单元测试编写（231 个测试，全部通过）
 - [x] 安装依赖（react-markdown, remark-gfm, rehype-sanitize, react-virtuoso 等）
+
+### Phase 3.2.2 工具调用展示 ✅
+- [x] 实现 ToolCallCard 组件（展开/折叠、状态指示、JSON格式化）
+- [x] 实现 ToolCallList 组件（工具调用列表渲染）
+- [x] 集成到 MessageBubble（条件渲染工具调用）
+- [x] 代码审查修复（1 个 HIGH 问题：补充集成测试）
+- [x] 单元测试编写（13 个测试，全部通过）
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档

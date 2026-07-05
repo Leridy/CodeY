@@ -87,4 +87,65 @@ describe('MessageBubble', () => {
     const cursor = container.querySelector('.animate-pulse');
     expect(cursor).toBeDefined();
   });
+
+  it('should render ToolCallList when message has toolCalls', () => {
+    const message = createMessage({
+      role: 'assistant',
+      toolCalls: [
+        {
+          id: 'tc-1',
+          name: 'file/read',
+          arguments: '{"path":"/tmp/test"}',
+          status: 'completed',
+        },
+        {
+          id: 'tc-2',
+          name: 'shell/execute',
+          arguments: '{"command":"ls"}',
+          status: 'running',
+        },
+      ],
+    });
+    render(<MessageBubble message={message} />);
+    const toolCallList = screen.getByTestId('tool-call-list');
+    expect(toolCallList).toBeDefined();
+  });
+
+  it('should not render ToolCallList when toolCalls is empty', () => {
+    const message = createMessage({ toolCalls: [] });
+    const { container } = render(<MessageBubble message={message} />);
+    const toolCallList = container.querySelector('[data-testid="tool-call-list"]');
+    expect(toolCallList).toBeNull();
+  });
+
+  it('should render ToolCallList before timestamp', () => {
+    const message = createMessage({
+      role: 'assistant',
+      timestamp: new Date('2026-07-05T12:00:00').getTime(),
+      toolCalls: [
+        {
+          id: 'tc-1',
+          name: 'file/read',
+          arguments: '{"path":"/tmp/test"}',
+          status: 'completed',
+        },
+      ],
+    });
+    const { container } = render(<MessageBubble message={message} showTimestamp={true} />);
+    // Get the flex-col container that holds both ToolCallList and timestamp
+    const contentWrapper = container.querySelector('.flex.flex-col');
+    expect(contentWrapper).not.toBeNull();
+
+    const children = Array.from(contentWrapper!.children);
+    const toolCallListIndex = children.findIndex(
+      el => el.getAttribute('data-testid') === 'tool-call-list',
+    );
+    const timestampIndex = children.findIndex(
+      el => el.classList.contains('text-xs') && el.classList.contains('text-gray-400'),
+    );
+
+    expect(toolCallListIndex).toBeGreaterThanOrEqual(0);
+    expect(timestampIndex).toBeGreaterThanOrEqual(0);
+    expect(toolCallListIndex).toBeLessThan(timestampIndex);
+  });
 });
