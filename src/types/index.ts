@@ -10,7 +10,7 @@ export type {
   LayoutPreset,
   DragState,
   SnapGuide,
-} from './grid'
+} from './grid';
 
 export type {
   PanelConfig,
@@ -19,6 +19,6 @@ export type {
   ContentPanelState,
   FileNode,
   PanelVisibility,
-} from './layout'
+} from './layout';
 
-export { DEFAULT_PANEL_CONFIG, BREAKPOINTS } from './layout'
+export { DEFAULT_PANEL_CONFIG, BREAKPOINTS } from './layout';

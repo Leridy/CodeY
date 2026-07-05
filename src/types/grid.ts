@@ -7,89 +7,89 @@
 /** CSS Grid track definition */
 export interface GridTrack {
   /** Current size (px or fr) */
-  size: number
+  size: number;
   /** Minimum size (px) */
-  min: number
+  min: number;
   /** Maximum size (px) */
-  max: number
+  max: number;
   /** Size unit */
-  unit: 'px' | 'fr'
+  unit: 'px' | 'fr';
 }
 
 /** Grid area mapping for a panel */
 export interface GridArea {
   /** Panel ID */
-  panelId: string
+  panelId: string;
   /** Start column (1-based) */
-  columnStart: number
+  columnStart: number;
   /** End column (1-based) */
-  columnEnd: number
+  columnEnd: number;
   /** Start row (1-based) */
-  rowStart: number
+  rowStart: number;
   /** End row (1-based) */
-  rowEnd: number
+  rowEnd: number;
 }
 
 /** CSS Grid state */
 export interface GridState {
   /** Column track definitions */
-  columns: GridTrack[]
+  columns: GridTrack[];
   /** Row track definitions */
-  rows: GridTrack[]
+  rows: GridTrack[];
   /** Panel area mappings */
-  areas: GridArea[]
+  areas: GridArea[];
 }
 
 /** Single panel state */
 export interface PanelState {
   /** Whether the panel is visible */
-  visible: boolean
+  visible: boolean;
   /** Whether the panel is collapsed */
-  collapsed: boolean
+  collapsed: boolean;
   /** Panel position in the grid */
-  position: GridArea
+  position: GridArea;
   /** Panel dimensions */
-  size: { width: number; height: number }
+  size: { width: number; height: number };
 }
 
 /** Layout preset */
 export interface LayoutPreset {
   /** Unique preset ID */
-  id: string
+  id: string;
   /** Display name */
-  name: string
+  name: string;
   /** Description */
-  description?: string
+  description?: string;
   /** Whether this is a built-in preset */
-  builtin: boolean
+  builtin: boolean;
   /** Grid configuration */
-  gridConfig: GridState
+  gridConfig: GridState;
   /** Panel states for this preset */
-  panelStates: Record<string, PanelState>
+  panelStates: Record<string, PanelState>;
 }
 
 /** Drag operation state */
 export interface DragState {
   /** Whether a drag is in progress */
-  isDragging: boolean
+  isDragging: boolean;
   /** Type of drag operation */
-  dragType: 'resize' | 'reorder' | null
+  dragType: 'resize' | 'reorder' | null;
   /** Target panel ID */
-  targetPanelId: string | null
+  targetPanelId: string | null;
   /** Drag direction */
-  direction: 'horizontal' | 'vertical' | null
+  direction: 'horizontal' | 'vertical' | null;
   /** Starting position */
-  startPos: { x: number; y: number }
+  startPos: { x: number; y: number };
   /** Current position */
-  currentPos: { x: number; y: number }
+  currentPos: { x: number; y: number };
 }
 
 /** Snap guide line */
 export interface SnapGuide {
   /** Guide position (px) */
-  position: number
+  position: number;
   /** Guide direction */
-  direction: 'horizontal' | 'vertical'
+  direction: 'horizontal' | 'vertical';
   /** Snap threshold (px) */
-  threshold: number
+  threshold: number;
 }

@@ -5,11 +5,11 @@
  * via the Zustand layout store.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
-import { usePanelState } from '../usePanelState'
-import { useLayoutStore } from '../../stores/layoutStore'
-import { DEFAULT_PRESET } from '../../stores/presets'
+import { describe, it, expect, beforeEach } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { usePanelState } from '../usePanelState';
+import { useLayoutStore } from '../../stores/layoutStore';
+import { DEFAULT_PRESET } from '../../stores/presets';
 
 function resetStore() {
   useLayoutStore.setState({
@@ -25,119 +25,117 @@ function resetStore() {
       startPos: { x: 0, y: 0 },
       currentPos: { x: 0, y: 0 },
     },
-  })
+  });
 }
 
 describe('usePanelState', () => {
   beforeEach(() => {
-    resetStore()
-  })
+    resetStore();
+  });
 
   describe('initial state', () => {
     it('should return visible true for explorer panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
-      expect(result.current.visible).toBe(true)
-    })
+      const { result } = renderHook(() => usePanelState('explorer'));
+      expect(result.current.visible).toBe(true);
+    });
 
     it('should return collapsed false for explorer panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
-      expect(result.current.collapsed).toBe(false)
-    })
+      const { result } = renderHook(() => usePanelState('explorer'));
+      expect(result.current.collapsed).toBe(false);
+    });
 
     it('should return correct size for explorer panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
-      expect(result.current.size).toEqual({ width: 260, height: 600 })
-    })
-  })
+      const { result } = renderHook(() => usePanelState('explorer'));
+      expect(result.current.size).toEqual({ width: 260, height: 600 });
+    });
+  });
 
   describe('non-existent panel', () => {
     it('should return visible false for unknown panel', () => {
-      const { result } = renderHook(() => usePanelState('nonexistent'))
-      expect(result.current.visible).toBe(false)
-    })
+      const { result } = renderHook(() => usePanelState('nonexistent'));
+      expect(result.current.visible).toBe(false);
+    });
 
     it('should return collapsed false for unknown panel', () => {
-      const { result } = renderHook(() => usePanelState('nonexistent'))
-      expect(result.current.collapsed).toBe(false)
-    })
+      const { result } = renderHook(() => usePanelState('nonexistent'));
+      expect(result.current.collapsed).toBe(false);
+    });
 
     it('should return zero size for unknown panel', () => {
-      const { result } = renderHook(() => usePanelState('nonexistent'))
-      expect(result.current.size).toEqual({ width: 0, height: 0 })
-    })
-  })
+      const { result } = renderHook(() => usePanelState('nonexistent'));
+      expect(result.current.size).toEqual({ width: 0, height: 0 });
+    });
+  });
 
   describe('collapse/expand operations', () => {
     it('should collapse the panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
-      expect(result.current.collapsed).toBe(false)
+      const { result } = renderHook(() => usePanelState('explorer'));
+      expect(result.current.collapsed).toBe(false);
       act(() => {
-        result.current.collapse()
-      })
-      expect(result.current.collapsed).toBe(true)
-    })
+        result.current.collapse();
+      });
+      expect(result.current.collapsed).toBe(true);
+    });
 
     it('should expand the panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
+      const { result } = renderHook(() => usePanelState('explorer'));
       act(() => {
-        result.current.collapse()
-      })
-      expect(result.current.collapsed).toBe(true)
+        result.current.collapse();
+      });
+      expect(result.current.collapsed).toBe(true);
       act(() => {
-        result.current.expand()
-      })
-      expect(result.current.collapsed).toBe(false)
-    })
+        result.current.expand();
+      });
+      expect(result.current.collapsed).toBe(false);
+    });
 
     it('should toggle collapse', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
+      const { result } = renderHook(() => usePanelState('explorer'));
       act(() => {
-        result.current.toggleCollapse()
-      })
-      expect(result.current.collapsed).toBe(true)
+        result.current.toggleCollapse();
+      });
+      expect(result.current.collapsed).toBe(true);
       act(() => {
-        result.current.toggleCollapse()
-      })
-      expect(result.current.collapsed).toBe(false)
-    })
-  })
+        result.current.toggleCollapse();
+      });
+      expect(result.current.collapsed).toBe(false);
+    });
+  });
 
   describe('visibility operations', () => {
     it('should hide the panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
-      expect(result.current.visible).toBe(true)
+      const { result } = renderHook(() => usePanelState('explorer'));
+      expect(result.current.visible).toBe(true);
       act(() => {
-        result.current.hide()
-      })
-      expect(result.current.visible).toBe(false)
-    })
+        result.current.hide();
+      });
+      expect(result.current.visible).toBe(false);
+    });
 
     it('should show the panel', () => {
-      const { result } = renderHook(() => usePanelState('explorer'))
+      const { result } = renderHook(() => usePanelState('explorer'));
       act(() => {
-        result.current.hide()
-      })
-      expect(result.current.visible).toBe(false)
+        result.current.hide();
+      });
+      expect(result.current.visible).toBe(false);
       act(() => {
-        result.current.show()
-      })
-      expect(result.current.visible).toBe(true)
-    })
-  })
+        result.current.show();
+      });
+      expect(result.current.visible).toBe(true);
+    });
+  });
 
   describe('multiple panels', () => {
     it('should manage content panel independently', () => {
-      const { result: explorer } = renderHook(() =>
-        usePanelState('explorer')
-      )
-      const { result: content } = renderHook(() => usePanelState('content'))
+      const { result: explorer } = renderHook(() => usePanelState('explorer'));
+      const { result: content } = renderHook(() => usePanelState('content'));
 
       act(() => {
-        explorer.current.collapse()
-      })
+        explorer.current.collapse();
+      });
 
-      expect(explorer.current.collapsed).toBe(true)
-      expect(content.current.collapsed).toBe(false)
-    })
-  })
-})
+      expect(explorer.current.collapsed).toBe(true);
+      expect(content.current.collapsed).toBe(false);
+    });
+  });
+});

@@ -5,31 +5,31 @@
  * Supports horizontal and vertical directions with size constraints and snapping.
  */
 
-import { useCallback } from 'react'
-import { usePanelDrag } from '../../hooks/usePanelDrag'
-import { useLayoutStore } from '../../stores/layoutStore'
+import { useCallback } from 'react';
+import { usePanelDrag } from '../../hooks/usePanelDrag';
+import { useLayoutStore } from '../../stores/layoutStore';
 
 export interface ResizeHandleProps {
   /** Resize direction */
-  direction: 'horizontal' | 'vertical'
+  direction: 'horizontal' | 'vertical';
   /** Target panel ID */
-  panelId: string
+  panelId: string;
   /** Current size (px) */
-  size: number
+  size: number;
   /** Minimum size (px) */
-  min: number
+  min: number;
   /** Maximum size (px) */
-  max: number
+  max: number;
   /** Whether snap is enabled */
-  snapEnabled?: boolean
+  snapEnabled?: boolean;
   /** Snap threshold (px) */
-  snapThreshold?: number
+  snapThreshold?: number;
   /** Size change callback */
-  onResize: (newSize: number) => void
+  onResize: (newSize: number) => void;
   /** Drag start callback */
-  onDragStart?: () => void
+  onDragStart?: () => void;
   /** Drag end callback */
-  onDragEnd?: () => void
+  onDragEnd?: () => void;
 }
 
 export function ResizeHandle({
@@ -44,38 +44,38 @@ export function ResizeHandle({
   onDragStart,
   onDragEnd,
 }: ResizeHandleProps) {
-  const startDrag = useLayoutStore((s) => s.startDrag)
-  const endDrag = useLayoutStore((s) => s.endDrag)
+  const startDrag = useLayoutStore((s) => s.startDrag);
+  const endDrag = useLayoutStore((s) => s.endDrag);
 
   const handleDragStart = useCallback(() => {
-    startDrag(panelId, 'resize', direction)
-    onDragStart?.()
-  }, [panelId, direction, startDrag, onDragStart])
+    startDrag(panelId, 'resize', direction);
+    onDragStart?.();
+  }, [panelId, direction, startDrag, onDragStart]);
 
   const handleDragEnd = useCallback(() => {
-    endDrag()
-    onDragEnd?.()
-  }, [endDrag, onDragEnd])
+    endDrag();
+    onDragEnd?.();
+  }, [endDrag, onDragEnd]);
 
   const handleResize = useCallback(
     (newSize: number) => {
-      let adjustedSize = newSize
+      let adjustedSize = newSize;
 
       // Apply snapping if enabled
       if (snapEnabled) {
-        const snapPoints = [min, max]
+        const snapPoints = [min, max];
         for (const point of snapPoints) {
           if (Math.abs(adjustedSize - point) <= snapThreshold) {
-            adjustedSize = point
-            break
+            adjustedSize = point;
+            break;
           }
         }
       }
 
-      onResize(adjustedSize)
+      onResize(adjustedSize);
     },
     [snapEnabled, snapThreshold, min, max, onResize]
-  )
+  );
 
   const { isDragging, onMouseDown, onTouchStart } = usePanelDrag({
     panelId,
@@ -86,9 +86,9 @@ export function ResizeHandle({
     onResize: handleResize,
     onDragStart: handleDragStart,
     onDragEnd: handleDragEnd,
-  })
+  });
 
-  const isHorizontal = direction === 'horizontal'
+  const isHorizontal = direction === 'horizontal';
 
   return (
     <div
@@ -106,5 +106,5 @@ export function ResizeHandle({
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
     />
-  )
+  );
 }

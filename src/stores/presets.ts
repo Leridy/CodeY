@@ -5,7 +5,7 @@
  * All presets use consistent panel IDs: 'explorer', 'content', 'details', 'terminal'.
  */
 
-import type { LayoutPreset } from '../types/grid'
+import type { LayoutPreset } from '../types/grid';
 
 /** Default four-panel IDE layout */
 export const DEFAULT_PRESET: LayoutPreset = {
@@ -56,7 +56,7 @@ export const DEFAULT_PRESET: LayoutPreset = {
       size: { width: 1380, height: 240 },
     },
   },
-}
+};
 
 /** Focus mode: chat/editor maximized, other panels collapsed */
 export const FOCUS_PRESET: LayoutPreset = {
@@ -105,7 +105,7 @@ export const FOCUS_PRESET: LayoutPreset = {
       size: { width: 0, height: 0 },
     },
   },
-}
+};
 
 /** Wide mode: content and details side by side (3-column with explorer) */
 export const WIDE_PRESET: LayoutPreset = {
@@ -156,11 +156,7 @@ export const WIDE_PRESET: LayoutPreset = {
       size: { width: 1380, height: 240 },
     },
   },
-}
+};
 
 /** All built-in presets */
-export const BUILTIN_PRESETS: LayoutPreset[] = [
-  DEFAULT_PRESET,
-  FOCUS_PRESET,
-  WIDE_PRESET,
-]
+export const BUILTIN_PRESETS: LayoutPreset[] = [DEFAULT_PRESET, FOCUS_PRESET, WIDE_PRESET];

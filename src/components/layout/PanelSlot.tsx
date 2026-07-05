@@ -5,43 +5,43 @@
  * Manages collapse/expand and close behavior via the layout store.
  */
 
-import React, { useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { PanelHeader } from './PanelHeader'
-import { ResizeHandle } from './ResizeHandle'
-import { usePanelState } from '../../hooks/usePanelState'
-import { useLayoutStore } from '../../stores/layoutStore'
-import type { PanelHeaderRenderProps } from './PanelHeader'
+import React, { useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PanelHeader } from './PanelHeader';
+import { ResizeHandle } from './ResizeHandle';
+import { usePanelState } from '../../hooks/usePanelState';
+import { useLayoutStore } from '../../stores/layoutStore';
+import type { PanelHeaderRenderProps } from './PanelHeader';
 
 export interface PanelSlotProps {
   /** Unique panel ID */
-  panelId: string
+  panelId: string;
   /** Panel title */
-  title: string
+  title: string;
   /** Panel icon */
-  icon: React.ReactNode
+  icon: React.ReactNode;
   /** Panel content */
-  children: React.ReactNode
+  children: React.ReactNode;
   /** Whether the panel can be collapsed (default: true) */
-  collapsible?: boolean
+  collapsible?: boolean;
   /** Whether the panel can be closed (default: true) */
-  closable?: boolean
+  closable?: boolean;
   /** Whether collapsed by default (default: false) */
-  defaultCollapsed?: boolean
+  defaultCollapsed?: boolean;
   /** Minimum width (px, default: 200) */
-  minWidth?: number
+  minWidth?: number;
   /** Minimum height (px, default: 120) */
-  minHeight?: number
+  minHeight?: number;
   /** Width when collapsed (px, default: 48) */
-  collapsedWidth?: number
+  collapsedWidth?: number;
   /** Collapse callback */
-  onCollapse?: () => void
+  onCollapse?: () => void;
   /** Expand callback */
-  onExpand?: () => void
+  onExpand?: () => void;
   /** Close callback */
-  onClose?: () => void
+  onClose?: () => void;
   /** Custom header renderer */
-  renderHeader?: (props: PanelHeaderRenderProps) => React.ReactNode
+  renderHeader?: (props: PanelHeaderRenderProps) => React.ReactNode;
 }
 
 export function PanelSlot({
@@ -59,35 +59,35 @@ export function PanelSlot({
   onClose,
   renderHeader,
 }: PanelSlotProps) {
-  const { visible, collapsed, size } = usePanelState(panelId)
-  const togglePanelCollapse = useLayoutStore((s) => s.togglePanelCollapse)
-  const hidePanel = useLayoutStore((s) => s.hidePanel)
+  const { visible, collapsed, size } = usePanelState(panelId);
+  const togglePanelCollapse = useLayoutStore((s) => s.togglePanelCollapse);
+  const hidePanel = useLayoutStore((s) => s.hidePanel);
 
   const handleToggleCollapse = useCallback(() => {
-    togglePanelCollapse(panelId)
+    togglePanelCollapse(panelId);
     if (collapsed) {
-      onExpand?.()
+      onExpand?.();
     } else {
-      onCollapse?.()
+      onCollapse?.();
     }
-  }, [panelId, collapsed, togglePanelCollapse, onCollapse, onExpand])
+  }, [panelId, collapsed, togglePanelCollapse, onCollapse, onExpand]);
 
   const handleClose = useCallback(() => {
-    hidePanel(panelId)
-    onClose?.()
-  }, [panelId, hidePanel, onClose])
+    hidePanel(panelId);
+    onClose?.();
+  }, [panelId, hidePanel, onClose]);
 
-  const resizePanel = useLayoutStore((s) => s.resizePanel)
+  const resizePanel = useLayoutStore((s) => s.resizePanel);
 
   const handleResize = useCallback(
     (newSize: number) => {
-      resizePanel(panelId, newSize)
+      resizePanel(panelId, newSize);
     },
     [panelId, resizePanel]
-  )
+  );
 
   if (!visible) {
-    return null
+    return null;
   }
 
   const headerProps: PanelHeaderRenderProps = {
@@ -96,7 +96,7 @@ export function PanelSlot({
     collapsed,
     onToggleCollapse: handleToggleCollapse,
     onClose: handleClose,
-  }
+  };
 
   return (
     <div
@@ -153,5 +153,5 @@ export function PanelSlot({
         />
       )}
     </div>
-  )
+  );
 }

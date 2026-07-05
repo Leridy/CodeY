@@ -5,111 +5,110 @@
  * Handles size constraints and calls the onResize callback with the new size.
  */
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react';
 
 interface UsePanelDragOptions {
   /** Target panel ID */
-  panelId: string
+  panelId: string;
   /** Drag direction */
-  direction: 'horizontal' | 'vertical'
+  direction: 'horizontal' | 'vertical';
   /** Minimum size (px) */
-  min: number
+  min: number;
   /** Maximum size (px) */
-  max: number
+  max: number;
   /** Current size (px) */
-  size: number
+  size: number;
   /** Resize callback */
-  onResize: (newSize: number) => void
+  onResize: (newSize: number) => void;
   /** Drag start callback */
-  onDragStart?: () => void
+  onDragStart?: () => void;
   /** Drag end callback */
-  onDragEnd?: () => void
+  onDragEnd?: () => void;
 }
 
 export function usePanelDrag(options: UsePanelDragOptions): {
-  isDragging: boolean
-  onMouseDown: (e: React.MouseEvent) => void
-  onTouchStart: (e: React.TouchEvent) => void
+  isDragging: boolean;
+  onMouseDown: (e: React.MouseEvent) => void;
+  onTouchStart: (e: React.TouchEvent) => void;
 } {
-  const { direction, min, max, size, onResize, onDragStart, onDragEnd } =
-    options
+  const { direction, min, max, size, onResize, onDragStart, onDragEnd } = options;
 
-  const [isDragging, setIsDragging] = useState(false)
-  const startRef = useRef({ pos: 0, size: 0 })
+  const [isDragging, setIsDragging] = useState(false);
+  const startRef = useRef({ pos: 0, size: 0 });
 
   const getPos = useCallback(
     (clientX: number, clientY: number): number => {
-      return direction === 'horizontal' ? clientX : clientY
+      return direction === 'horizontal' ? clientX : clientY;
     },
     [direction]
-  )
+  );
 
   const handleMove = useCallback(
     (currentPos: number) => {
-      const delta = currentPos - startRef.current.pos
-      const newSize = Math.min(max, Math.max(min, startRef.current.size + delta))
-      onResize(newSize)
+      const delta = currentPos - startRef.current.pos;
+      const newSize = Math.min(max, Math.max(min, startRef.current.size + delta));
+      onResize(newSize);
     },
     [min, max, onResize]
-  )
+  );
 
   const handleEnd = useCallback(() => {
-    setIsDragging(false)
-    onDragEnd?.()
-  }, [onDragEnd])
+    setIsDragging(false);
+    onDragEnd?.();
+  }, [onDragEnd]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      e.preventDefault()
-      setIsDragging(true)
+      e.preventDefault();
+      setIsDragging(true);
       startRef.current = {
         pos: getPos(e.clientX, e.clientY),
         size,
-      }
-      onDragStart?.()
+      };
+      onDragStart?.();
 
       const onMouseMove = (ev: MouseEvent) => {
-        handleMove(getPos(ev.clientX, ev.clientY))
-      }
+        handleMove(getPos(ev.clientX, ev.clientY));
+      };
 
       const onMouseUp = () => {
-        document.removeEventListener('mousemove', onMouseMove)
-        document.removeEventListener('mouseup', onMouseUp)
-        handleEnd()
-      }
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        handleEnd();
+      };
 
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener('mouseup', onMouseUp)
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     },
     [getPos, size, onDragStart, handleMove, handleEnd]
-  )
+  );
 
   const onTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      const touch = e.touches[0]
-      setIsDragging(true)
+      const touch = e.touches[0];
+      setIsDragging(true);
       startRef.current = {
         pos: getPos(touch.clientX, touch.clientY),
         size,
-      }
-      onDragStart?.()
+      };
+      onDragStart?.();
 
       const onTouchMove = (ev: TouchEvent) => {
-        const t = ev.touches[0]
-        handleMove(getPos(t.clientX, t.clientY))
-      }
+        const t = ev.touches[0];
+        handleMove(getPos(t.clientX, t.clientY));
+      };
 
       const onTouchEnd = () => {
-        document.removeEventListener('touchmove', onTouchMove)
-        document.removeEventListener('touchend', onTouchEnd)
-        handleEnd()
-      }
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+        handleEnd();
+      };
 
-      document.addEventListener('touchmove', onTouchMove)
-      document.addEventListener('touchend', onTouchEnd)
+      document.addEventListener('touchmove', onTouchMove);
+      document.addEventListener('touchend', onTouchEnd);
     },
     [getPos, size, onDragStart, handleMove, handleEnd]
-  )
+  );
 
-  return { isDragging, onMouseDown, onTouchStart }
+  return { isDragging, onMouseDown, onTouchStart };
 }
