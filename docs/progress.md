@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 2.5 全部完成，代码已推送)
+> 最后更新：2026-07-05 (Phase 3.1 布局实现完成)
 
 ## 当前任务
 
-- [ ] Phase 3 待规划
+- [ ] Phase 3.2 对话界面实现（消息流 + 工具调用 + 会话管理 + 分支线程）
 
 ## 待解决问题
 
@@ -22,6 +22,23 @@
 - [x] 新增 36 个测试，全部通过，零回归
 - [x] 代码审查修复：AnthropicMessage.content 类型（支持多轮工具调用）
 - [x] 代码审查修复：流式模式工具调用回退（有工具时强制非流式）
+
+### Phase 3.1 布局实现 ✅
+- [x] 实现 GridContainer 组件（CSS Grid 布局 + 响应式断点）
+- [x] 实现 PanelSlot 组件（面板插槽 + 折叠/展开动画）
+- [x] 实现 PanelHeader 组件（标题栏 + 折叠/关闭按钮）
+- [x] 实现 ResizeHandle 组件（拖拽调整大小 + 鼠标/触摸支持）
+- [x] 实现 LayoutStore（Zustand 状态管理 + localStorage 持久化）
+- [x] 实现布局预设系统（Default, Focus, Wide + 自定义预设）
+- [x] 实现 8 个自定义 Hooks（useGridLayout, usePanelDrag 等）
+- [x] 构建成功（194.89 kB JS + 25.51 kB CSS）
+
+### Phase 3.1 Spec 创建 ✅
+- [x] 创建 design.md 设计文档
+- [x] 创建 api.md API 文档
+- [x] 创建 test.md 测试计划
+- [x] 头脑风暴确定技术方案（Zustand + Radix UI + Tailwind）
+- [x] 生成 Phase 3 技术规划博客
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档
@@ -143,6 +160,7 @@
 | 2.3 | 沙箱系统 | ✅ | ✅ | ✅ | 完成 |
 | 2.4 | Agent Loop | ✅ | ✅ | ✅ | 完成 |
 | 2.5 | 集成实现 | ✅ | ✅ | ✅ | 完成 |
+| 3.1 | 布局系统 | ✅ | ✅ | ✅ | 完成 |
 
 ## 博客文章
 
@@ -153,6 +171,7 @@
 | [Blog] 2026-07-05-windows-sandbox-analysis.md | ✅ | 37KB | Windows 沙箱分析 |
 | [Blog] 2026-07-05-agent-loop.md | ✅ | 37KB | Agent Loop 博客 |
 | [Blog] 2026-07-05-phase2.5-integration.md | ✅ | 28KB | Phase 2.5 集成博客 |
+| [Blog] 2026-07-05-phase3-frontend-ui-planning.md | ✅ | 16KB | Phase 3 技术规划博客 |
 
 ## Skill 创建状态
 

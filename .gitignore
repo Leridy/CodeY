@@ -125,3 +125,6 @@ temp/
 
 # Skill development (uncomment if needed)
 # .claude/skills/*/
+
+# External project sync skills (contains playwright scripts)
+.claude/skills/huashui-blog-sync/
