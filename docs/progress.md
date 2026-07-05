@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 3.1 全部完成，包括实现、测试、博客)
+> 最后更新：2026-07-05 (Phase 3.2 Spec 创建完成)
 
 ## 当前任务
 
-- [ ] Phase 3.2 对话界面实现（消息流 + 工具调用 + 会话管理 + 分支线程）
+- [ ] Phase 3.2.1 基础对话实现（ChatPanel + MessageList + ChatInput + 流式桥接）
 
 ## 待解决问题
 
@@ -51,6 +51,13 @@
 - [x] 创建 test.md 测试计划
 - [x] 头脑风暴确定技术方案（Zustand + Radix UI + Tailwind）
 - [x] 生成 Phase 3 技术规划博客
+
+### Phase 3.2 Spec 创建 ✅
+- [x] 创建 design.md 设计文档（700 行）
+- [x] 创建 api.md API 文档（752 行）
+- [x] 创建 test.md 测试计划（430 行）
+- [x] 头脑风暴确定技术方案（react-virtuoso + react-markdown + Tauri Events + Zustand）
+- [x] 确定分期方案（3.2.1基础对话 → 3.2.2工具调用 → 3.2.3会话管理 → 3.2.4分支线程）
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档
@@ -173,6 +180,7 @@
 | 2.4 | Agent Loop | ✅ | ✅ | ✅ | 完成 |
 | 2.5 | 集成实现 | ✅ | ✅ | ✅ | 完成 |
 | 3.1 | 布局系统 | ✅ | ✅ | ✅ | 完成 |
+| 3.2 | 对话界面 | ✅ | ✅ | ✅ | 完成 |
 
 ## 博客文章
 
