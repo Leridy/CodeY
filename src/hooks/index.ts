@@ -9,3 +9,6 @@ export { useLayoutPreset } from './useLayoutPreset';
 export { useLayoutMode } from './useLayoutMode';
 export { usePanelVisibility } from './usePanelVisibility';
 export { useStreaming } from './useStreaming';
+export { useChat } from './useChat';
+export { useStreamListener } from './useStreamListener';
+export { useAutoScroll } from './useAutoScroll';

@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 3.2 Spec 创建完成)
+> 最后更新：2026-07-05 (Phase 3.2.1 基础对话实现完成)
 
 ## 当前任务
 
-- [ ] Phase 3.2.1 基础对话实现（ChatPanel + MessageList + ChatInput + 流式桥接）
+- [ ] Phase 3.2.2 工具调用展示（ToolCallCard组件 + 工具调用状态跟踪）
 
 ## 待解决问题
 
@@ -58,6 +58,17 @@
 - [x] 创建 test.md 测试计划（430 行）
 - [x] 头脑风暴确定技术方案（react-virtuoso + react-markdown + Tauri Events + Zustand）
 - [x] 确定分期方案（3.2.1基础对话 → 3.2.2工具调用 → 3.2.3会话管理 → 3.2.4分支线程）
+
+### Phase 3.2.1 基础对话实现 ✅
+- [x] 实现类型定义（ChatMessage, ToolCallState, ChatSession, StreamChunk）
+- [x] 实现 ChatStore（Zustand 状态管理 + 流式响应）
+- [x] 实现 SessionStore（会话数据管理 + localStorage 持久化）
+- [x] 实现 Hooks（useChat, useStreamListener, useAutoScroll）
+- [x] 实现组件（ChatPanel, MessageList, MessageBubble, MessageContent, ChatInput）
+- [x] 实现辅助组件（StreamIndicator, EmptyState, CodeBlock, CopyButton）
+- [x] 代码审查修复（3 个 HIGH 问题：内存泄漏、XSS防护、跨Store依赖）
+- [x] 单元测试编写（231 个测试，全部通过）
+- [x] 安装依赖（react-markdown, remark-gfm, rehype-sanitize, react-virtuoso 等）
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档

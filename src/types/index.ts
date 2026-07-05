@@ -22,3 +22,18 @@ export type {
 } from './layout';
 
 export { DEFAULT_PANEL_CONFIG, BREAKPOINTS } from './layout';
+
+export type {
+  MessageRole,
+  MessageStatus,
+  TokenUsage,
+  ToolCallStatus,
+  ToolCallState,
+  ChatMessage,
+  StreamChunkType,
+  StreamChunk,
+  ChatSession,
+  CreateSessionOptions,
+  ChatSessionsPersistData,
+  ChatSettingsPersistData,
+} from './chat';
