@@ -42,6 +42,8 @@
 - [x] 实现布局预设系统（Default, Focus, Wide + 自定义预设）
 - [x] 实现 8 个自定义 Hooks（useGridLayout, usePanelDrag 等）
 - [x] 构建成功（194.89 kB JS + 25.51 kB CSS）
+- [x] 代码审查修复（5 个 HIGH + 1 个 MEDIUM 问题）
+- [x] 单元测试编写（154 个测试，覆盖率 97.61%）
 
 ### Phase 3.1 Spec 创建 ✅
 - [x] 创建 design.md 设计文档
