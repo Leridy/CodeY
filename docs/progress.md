@@ -184,6 +184,7 @@
 | [Blog] 2026-07-05-agent-loop.md | ✅ | 37KB | Agent Loop 博客 |
 | [Blog] 2026-07-05-phase2.5-integration.md | ✅ | 28KB | Phase 2.5 集成博客 |
 | [Blog] 2026-07-05-phase3-frontend-ui-planning.md | ✅ | 16KB | Phase 3 技术规划博客 |
+| [Blog] 2026-07-05-phase3.1-layout-implementation.md | ✅ | 40KB | Phase 3.1 布局实现博客 |
 
 ## Skill 创建状态
 
