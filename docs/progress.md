@@ -1,6 +1,6 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 2.5 集成实现完成)
+> 最后更新：2026-07-05 (Phase 2.5 集成实现 + 代码审查修复完成)
 
 ## 当前任务
 
@@ -20,6 +20,8 @@
 - [x] Phase 2.5.5: Anthropic Tool Use 实现（tool_use content block 解析）
 - [x] Phase 2.5.6: 流式响应集成（streaming/non-streaming 双模式）
 - [x] 新增 36 个测试，全部通过，零回归
+- [x] 代码审查修复：AnthropicMessage.content 类型（支持多轮工具调用）
+- [x] 代码审查修复：流式模式工具调用回退（有工具时强制非流式）
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档
