@@ -4,6 +4,7 @@ members = [
     "crates/codey-core",
     "crates/codey-tauri",
     "crates/codey-server",
+    "src-tauri",
 ]
 
 [workspace.package]

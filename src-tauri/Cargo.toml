@@ -1,0 +1,19 @@
+[package]
+name = "codey"
+version.workspace = true
+edition.workspace = true
+description = "CodeY - AI Agent 工具"
+authors = ["Leridy"]
+
+[lib]
+name = "codey_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { workspace = true }
+tauri-plugin-opener = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
