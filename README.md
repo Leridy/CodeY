@@ -224,6 +224,109 @@ pnpm tauri dev    # Desktop 应用
 pnpm dev          # 纯 Web 模式
 ```
 
+### 运行模式说明
+
+CodeY 支持两种运行模式：
+
+#### 1. Desktop 模式 (推荐)
+
+完整的桌面应用体验，包含 Rust 后端和 Tauri 原生窗口：
+
+```bash
+pnpm tauri dev
+```
+
+**特点**：
+- 完整的 Agent Loop 功能
+- 原生文件系统访问
+- 系统级沙箱保护
+- 热重载开发体验
+
+#### 2. Web 模式
+
+仅前端界面，适合 UI 开发和调试：
+
+```bash
+pnpm dev
+```
+
+**特点**：
+- 浏览器中运行
+- 使用 Mock 数据（无 Rust 后端）
+- 快速 UI 开发迭代
+- 访问 http://localhost:1420
+
+### 常见问题
+
+#### Q: `pnpm tauri dev` 报错 "Cargo not found"
+
+**A**: 需要安装 Rust 工具链：
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+```
+
+#### Q: macOS 提示 "xcrun: error: invalid active developer path"
+
+**A**: 安装 Xcode Command Line Tools：
+
+```bash
+xcode-select --install
+```
+
+#### Q: Linux 提示 "webkit2gtk-4.0 not found"
+
+**A**: 安装系统依赖：
+
+```bash
+# Ubuntu/Debian
+sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev
+
+# Fedora
+sudo dnf install -y webkit2gtk4.1-devel libappindicator-gtk3-devel librsvg2-devel
+```
+
+#### Q: Windows 提示 "WebView2 not found"
+
+**A**: 下载并安装 WebView2 Runtime：
+https://developer.microsoft.com/en-us/microsoft-edge/webview2/
+
+#### Q: 前端依赖安装失败
+
+**A**: 清除缓存重试：
+
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+#### Q: Rust 编译很慢
+
+**A**: 首次编译需要下载和编译所有依赖，后续编译会快很多。可以使用 `cargo build --release` 进行 release 构建。
+
+### 开发工作流
+
+```bash
+# 1. 启动开发服务器（选择一种模式）
+pnpm tauri dev    # Desktop 模式
+# 或
+pnpm dev          # Web 模式
+
+# 2. 运行测试
+pnpm test         # 前端测试
+cargo test        # 后端测试
+
+# 3. 代码检查
+pnpm lint         # ESLint
+pnpm format       # Prettier
+cargo clippy      # Rust 代码检查
+
+# 4. 构建生产版本
+pnpm tauri build  # Desktop 安装包
+pnpm build        # Web 前端包
+```
+
 ---
 
 ## 平台安装指南
