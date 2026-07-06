@@ -307,6 +307,48 @@ pnpm install
 
 ### 开发工作流
 
+#### 使用 Makefile (推荐)
+
+项目提供了 Makefile 简化常用命令：
+
+```bash
+# 查看所有可用命令
+make help
+
+# 启动开发环境
+make dev          # Desktop 模式 (Tauri + Vite)
+make dev-web      # Web 模式 (仅前端)
+
+# 构建项目
+make build        # 构建前端生产包
+make build-desktop # 构建 Desktop 安装包
+make build-all    # 构建所有版本
+
+# 测试
+make test         # 运行所有测试
+make test-frontend # 运行前端测试
+make test-backend # 运行后端测试
+make test-coverage # 生成覆盖率报告
+
+# 代码质量
+make lint         # 代码检查
+make format       # 代码格式化
+make check        # 运行所有检查 (lint + test)
+
+# 依赖管理
+make install      # 安装依赖
+
+# 清理
+make clean        # 清理构建产物
+make clean-all    # 清理所有构建产物和依赖
+
+# 信息
+make info         # 显示项目信息
+make status       # 显示项目状态
+```
+
+#### 使用 pnpm/cargo 命令
+
 ```bash
 # 1. 启动开发服务器（选择一种模式）
 pnpm tauri dev    # Desktop 模式
