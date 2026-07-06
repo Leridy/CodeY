@@ -14,6 +14,7 @@ function resetStores() {
     activeSessionId: null,
     isStreaming: false,
     streamingMessageId: null,
+    branchSelections: {},
   });
 
   useSessionStore.setState({
@@ -317,6 +318,152 @@ describe('ChatStore message operations', () => {
     });
 
     it('should return empty array for non-existent session', () => {
+      const messages = useChatStore.getState().getMessages('non-existent');
+      expect(messages).toEqual([]);
+    });
+  });
+});
+
+describe('ChatStore branch operations', () => {
+  let sessionId: string;
+
+  beforeEach(() => {
+    useChatStore.setState({
+      activeSessionId: null,
+      isStreaming: false,
+      streamingMessageId: null,
+      branchSelections: {},
+    });
+    useSessionStore.setState({
+      sessions: {},
+      sessionList: [],
+    });
+    const session = useSessionStore.getState().createSession({ title: 'Branch Test' });
+    sessionId = session.id;
+    useChatStore.getState().setActiveSession(session.id);
+  });
+
+  describe('switchBranch', () => {
+    it('should update branch selections', () => {
+      useChatStore.getState().switchBranch(sessionId, 'msg-1', 1);
+      const selections = useChatStore.getState().branchSelections[sessionId];
+      expect(selections?.['msg-1']).toBe(1);
+    });
+
+    it('should support multiple branch selections', () => {
+      useChatStore.getState().switchBranch(sessionId, 'msg-1', 1);
+      useChatStore.getState().switchBranch(sessionId, 'msg-2', 2);
+      const selections = useChatStore.getState().branchSelections[sessionId];
+      expect(selections?.['msg-1']).toBe(1);
+      expect(selections?.['msg-2']).toBe(2);
+    });
+
+    it('should allow switching back to branch 0', () => {
+      useChatStore.getState().switchBranch(sessionId, 'msg-1', 1);
+      useChatStore.getState().switchBranch(sessionId, 'msg-1', 0);
+      const selections = useChatStore.getState().branchSelections[sessionId];
+      expect(selections?.['msg-1']).toBe(0);
+    });
+  });
+
+  describe('createBranch', () => {
+    it('should create a branch message with correct parentId', () => {
+      // Add a trunk message first
+      const trunkMsg = useSessionStore.getState().addUserMessage(sessionId, 'Trunk message');
+      
+      const branchMsg = useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch message');
+      expect(branchMsg.parentId).toBe(trunkMsg.id);
+      expect(branchMsg.content).toBe('Branch message');
+      expect(branchMsg.role).toBe('user');
+      expect(branchMsg.status).toBe('completed');
+    });
+
+    it('should set branchIndex to 1 for first branch', () => {
+      const trunkMsg = useSessionStore.getState().addUserMessage(sessionId, 'Trunk');
+      const branchMsg = useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch');
+      expect(branchMsg.branchIndex).toBe(1);
+    });
+
+    it('should increment branchIndex for subsequent branches', () => {
+      const trunkMsg = useSessionStore.getState().addUserMessage(sessionId, 'Trunk');
+      const branch1 = useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch 1');
+      const branch2 = useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch 2');
+      expect(branch1.branchIndex).toBe(1);
+      expect(branch2.branchIndex).toBe(2);
+    });
+
+    it('should add branch message to session', () => {
+      const trunkMsg = useSessionStore.getState().addUserMessage(sessionId, 'Trunk');
+      useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch');
+      
+      const session = useSessionStore.getState().sessions[sessionId];
+      const branchMsg = session.messages.find((m) => m.parentId === trunkMsg.id);
+      expect(branchMsg).toBeDefined();
+      expect(branchMsg?.content).toBe('Branch');
+    });
+
+    it('should update branch selections after creating branch', () => {
+      const trunkMsg = useSessionStore.getState().addUserMessage(sessionId, 'Trunk');
+      useChatStore.getState().createBranch(sessionId, trunkMsg.id, 'Branch');
+      
+      const selections = useChatStore.getState().branchSelections[sessionId];
+      expect(selections?.[trunkMsg.id]).toBe(1);
+    });
+  });
+
+  describe('getMessages with branches', () => {
+    it('should return trunk messages when no branches exist', () => {
+      useSessionStore.getState().addUserMessage(sessionId, 'Msg 1');
+      useSessionStore.getState().addUserMessage(sessionId, 'Msg 2');
+      const messages = useChatStore.getState().getMessages(sessionId);
+      expect(messages).toHaveLength(2);
+    });
+
+    it('should show all trunk and active branch messages', () => {
+      const trunk1 = useSessionStore.getState().addUserMessage(sessionId, 'Trunk 1');
+      useSessionStore.getState().addUserMessage(sessionId, 'Trunk 2');
+      
+      // Create a branch from trunk1 (auto-selects the new branch)
+      useChatStore.getState().createBranch(sessionId, trunk1.id, 'Branch from trunk1');
+      
+      // getMessages shows: trunk1, trunk2, and the active branch message
+      const messages = useChatStore.getState().getMessages(sessionId);
+      expect(messages).toHaveLength(3);
+      expect(messages[0].content).toBe('Trunk 1');
+      expect(messages[1].content).toBe('Trunk 2');
+      expect(messages[2].content).toBe('Branch from trunk1');
+    });
+
+    it('should show only trunk when branch is deselected', () => {
+      const trunk1 = useSessionStore.getState().addUserMessage(sessionId, 'Trunk 1');
+      useSessionStore.getState().addUserMessage(sessionId, 'Trunk 2');
+      
+      // Create a branch from trunk1 (auto-selects branch 1)
+      useChatStore.getState().createBranch(sessionId, trunk1.id, 'Branch from trunk1');
+      
+      // Switch back to trunk (branch 0)
+      useChatStore.getState().switchBranch(sessionId, trunk1.id, 0);
+      
+      const messages = useChatStore.getState().getMessages(sessionId);
+      expect(messages).toHaveLength(2);
+      expect(messages[0].content).toBe('Trunk 1');
+      expect(messages[1].content).toBe('Trunk 2');
+    });
+
+    it('should show branch messages when branch is selected', () => {
+      const trunk1 = useSessionStore.getState().addUserMessage(sessionId, 'Trunk 1');
+      
+      // Create a branch from trunk1 (auto-selects branch 1)
+      useChatStore.getState().createBranch(sessionId, trunk1.id, 'Branch 1');
+      
+      const messages = useChatStore.getState().getMessages(sessionId);
+      // Should include trunk1 and Branch 1 (branch auto-selected)
+      expect(messages).toHaveLength(2);
+      expect(messages[0].content).toBe('Trunk 1');
+      expect(messages[1].content).toBe('Branch 1');
+    });
+
+    it('should return empty for non-existent session', () => {
       const messages = useChatStore.getState().getMessages('non-existent');
       expect(messages).toEqual([]);
     });

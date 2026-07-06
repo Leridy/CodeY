@@ -2,12 +2,13 @@
  * Chat Store
  *
  * Zustand store managing chat sessions, messages, and streaming state.
- * Provides session CRUD, message management, and streaming operations.
+ * Provides session CRUD, message management, streaming operations, and branch management.
  *
  * Architecture:
- * - useChatStore: Streaming state only (activeSessionId, isStreaming, etc.)
+ * - useChatStore: Streaming state, active session, and branch selections
  * - useSessionStore: Session data + message operations (owns all message data)
- * - No cross-store dependencies to avoid circular coupling
+ * - Cross-store reads via getState() are intentional (both stores co-located in this file)
+ * - No circular subscription coupling -- getState() provides synchronous snapshots only
  */
 
 import { create } from 'zustand';
@@ -44,7 +45,68 @@ interface DeleteSessionResult {
   shouldUpdateActive: boolean;
 }
 
-/** Chat store state and actions - streaming state only */
+/**
+ * Filter messages to include only those on the active branch path.
+ *
+ * Algorithm: Walk messages in order. For each message:
+ * - If parentId is null (root), include it
+ * - If parentId is set, include it only if:
+ *   - The parent message is already included
+ *   - This message's branchIndex matches the active selection for that parent
+ *     (defaulting to 0 if no explicit selection exists)
+ *
+ * This preserves the chronological order and handles nested branches correctly.
+ */
+function filterBranchMessages(
+  messages: ChatMessage[],
+  branchSelections: Record<string, number>
+): ChatMessage[] {
+  const included = new Set<string>();
+  const result: ChatMessage[] = [];
+
+  for (const msg of messages) {
+    if (msg.parentId === null) {
+      // Root message (trunk start or system message) - always include
+      included.add(msg.id);
+      result.push(msg);
+    } else if (included.has(msg.parentId)) {
+      // Parent is included - check if this branch is active
+      const activeBranchIndex = branchSelections[msg.parentId] ?? 0;
+      if (msg.branchIndex === activeBranchIndex) {
+        included.add(msg.id);
+        result.push(msg);
+      }
+    }
+    // Otherwise: parent not included or branch not active - skip
+  }
+
+  return result;
+}
+
+/**
+ * Find all branches (messages with same parentId) from a given message.
+ * Returns the sibling messages that share the same parent.
+ */
+function findBranchSiblings(
+  messages: ChatMessage[],
+  parentId: string
+): ChatMessage[] {
+  return messages.filter((msg: ChatMessage) => msg.parentId === parentId);
+}
+
+/**
+ * Find the next available branch index for a given parent message.
+ */
+function getNextBranchIndex(
+  messages: ChatMessage[],
+  parentId: string
+): number {
+  const siblings = findBranchSiblings(messages, parentId);
+  if (siblings.length === 0) return 1;
+  return Math.max(...siblings.map((s: ChatMessage) => s.branchIndex)) + 1;
+}
+
+/** Chat store state and actions - streaming state + branch management */
 export interface ChatStore {
   // --- State ---
   /** Active session ID */
@@ -53,6 +115,12 @@ export interface ChatStore {
   isStreaming: boolean;
   /** Current streaming message ID */
   streamingMessageId: string | null;
+  /**
+   * Branch selections per session.
+   * Maps sessionId -> parentMessageId -> selectedBranchIndex.
+   * Only tracks non-zero selections (branch 0 is the default).
+   */
+  branchSelections: Record<string, Record<string, number>>;
 
   // --- Streaming actions ---
   /** Start streaming */
@@ -71,7 +139,7 @@ export interface ChatStore {
   // --- Session actions ---
   /** Set active session */
   setActiveSession: (sessionId: string | null) => void;
-  /** Get messages for session */
+  /** Get messages for session (filtered by active branch path) */
   getMessages: (sessionId: string) => ChatMessage[];
 }
 
@@ -83,9 +151,10 @@ export const useChatStore = create<ChatStore>()(
         activeSessionId: null,
         isStreaming: false,
         streamingMessageId: null,
+        branchSelections: {} as Record<string, Record<string, number>>,
 
         // --- Streaming actions ---
-        startStreaming: (messageId) => {
+        startStreaming: (messageId: string) => {
           set({
             isStreaming: true,
             streamingMessageId: messageId,
@@ -107,16 +176,36 @@ export const useChatStore = create<ChatStore>()(
         },
 
         // --- Branch actions ---
-        switchBranch: (_sessionId, _messageId, _branchIndex) => {
-          // Branch switching logic will be implemented in Phase 3.2.4
-          void _sessionId;
-          void _messageId;
-          void _branchIndex;
+        switchBranch: (sessionId: string, messageId: string, branchIndex: number) => {
+          set((state) => {
+            const sessionSelections = state.branchSelections[sessionId] ?? {};
+            const newSessionSelections: Record<string, number> = {
+              ...sessionSelections,
+              [messageId]: branchIndex,
+            };
+            return {
+              branchSelections: {
+                ...state.branchSelections,
+                [sessionId]: newSessionSelections,
+              },
+            };
+          });
         },
 
-        createBranch: (_sessionId, messageId, content) => {
-          // Branch creation logic will be implemented in Phase 3.2.4
-          void _sessionId;
+        createBranch: (sessionId: string, messageId: string, content: string): ChatMessage => {
+          // Validate messageId exists in the session
+          const session = useSessionStore.getState().sessions[sessionId];
+          if (!session) {
+            throw new Error(`Session not found: ${sessionId}`);
+          }
+          const parentMessage = session.messages.find((m: ChatMessage) => m.id === messageId);
+          if (!parentMessage) {
+            throw new Error(`Message not found: ${messageId}`);
+          }
+
+          // Calculate the next branch index for this parent
+          const nextBranchIndex = getNextBranchIndex(session.messages, messageId);
+
           const message: ChatMessage = {
             id: generateId(),
             role: 'user',
@@ -124,28 +213,50 @@ export const useChatStore = create<ChatStore>()(
             timestamp: Date.now(),
             toolCalls: [],
             parentId: messageId,
-            branchIndex: 1,
+            branchIndex: nextBranchIndex,
             status: 'completed',
           };
+
+          // Add the message to the session store
+          useSessionStore.getState().addBranchMessage(sessionId, message);
+
+          // Update branch selections to show the new branch
+          set((state) => {
+            const sessionSelections = state.branchSelections[sessionId] ?? {};
+            const newSessionSelections: Record<string, number> = {
+              ...sessionSelections,
+              [messageId]: nextBranchIndex,
+            };
+            return {
+              branchSelections: {
+                ...state.branchSelections,
+                [sessionId]: newSessionSelections,
+              },
+            };
+          });
 
           return message;
         },
 
         // --- Session actions ---
-        setActiveSession: (sessionId) => {
+        setActiveSession: (sessionId: string | null) => {
           set({ activeSessionId: sessionId });
         },
 
-        getMessages: (sessionId) => {
+        getMessages: (sessionId: string): ChatMessage[] => {
           const sessions = useSessionStore.getState().sessions;
           const session = sessions[sessionId];
-          return session?.messages ?? [];
+          if (!session) return [];
+
+          const branchSelections = get().branchSelections[sessionId] ?? {};
+          return filterBranchMessages(session.messages, branchSelections);
         },
       }),
       {
         name: 'codey-chat-store',
         partialize: (state) => ({
           activeSessionId: state.activeSessionId,
+          branchSelections: state.branchSelections,
         }),
       }
     )
@@ -183,6 +294,8 @@ export interface SessionStore {
   updateMessage: (sessionId: string, messageId: string, content: string) => void;
   /** Delete message */
   deleteMessage: (sessionId: string, messageId: string) => void;
+  /** Add a branch message directly (used by createBranch) */
+  addBranchMessage: (sessionId: string, message: ChatMessage) => void;
 
   // --- Tool call actions ---
   /** Add tool call to message */
@@ -210,11 +323,11 @@ export const useSessionStore = create<SessionStore>()(
     persist(
       (set, get) => ({
         // --- Initial state ---
-        sessions: {},
-        sessionList: [],
+        sessions: {} as Record<string, ChatSession>,
+        sessionList: [] as ChatSession[],
 
         // --- CRUD actions ---
-        createSession: (options = {}) => {
+        createSession: (options: CreateSessionOptions = {}): ChatSession => {
           const session: ChatSession = {
             id: generateId(),
             title: options.title ?? 'New Chat',
@@ -249,7 +362,7 @@ export const useSessionStore = create<SessionStore>()(
           return session;
         },
 
-        deleteSession: (sessionId) => {
+        deleteSession: (sessionId: string): DeleteSessionResult => {
           const currentActiveId = useChatStore.getState().activeSessionId;
           let nextActiveSessionId: string | null = null;
 
@@ -271,7 +384,7 @@ export const useSessionStore = create<SessionStore>()(
           };
         },
 
-        renameSession: (sessionId, title) => {
+        renameSession: (sessionId: string, title: string) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -286,11 +399,11 @@ export const useSessionStore = create<SessionStore>()(
           });
         },
 
-        getSession: (sessionId) => {
+        getSession: (sessionId: string) => {
           return get().sessions[sessionId];
         },
 
-        updateSession: (sessionId, update) => {
+        updateSession: (sessionId: string, update: Partial<ChatSession>) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -306,7 +419,7 @@ export const useSessionStore = create<SessionStore>()(
         },
 
         // --- Message actions ---
-        addUserMessage: (sessionId, content) => {
+        addUserMessage: (sessionId: string, content: string): ChatMessage => {
           const message: ChatMessage = {
             id: generateId(),
             role: 'user',
@@ -338,7 +451,7 @@ export const useSessionStore = create<SessionStore>()(
           return message;
         },
 
-        addAssistantMessage: (sessionId) => {
+        addAssistantMessage: (sessionId: string): AddAssistantMessageResult => {
           const message: ChatMessage = {
             id: generateId(),
             role: 'assistant',
@@ -370,7 +483,7 @@ export const useSessionStore = create<SessionStore>()(
           return { message, shouldStartStreaming: true };
         },
 
-        appendStreamContent: (sessionId, messageId, content) => {
+        appendStreamContent: (sessionId: string, messageId: string, content: string) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -389,7 +502,7 @@ export const useSessionStore = create<SessionStore>()(
           });
         },
 
-        updateMessage: (sessionId, messageId, content) => {
+        updateMessage: (sessionId: string, messageId: string, content: string) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -408,7 +521,7 @@ export const useSessionStore = create<SessionStore>()(
           });
         },
 
-        deleteMessage: (sessionId, messageId) => {
+        deleteMessage: (sessionId: string, messageId: string) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -425,8 +538,27 @@ export const useSessionStore = create<SessionStore>()(
           });
         },
 
+        addBranchMessage: (sessionId: string, message: ChatMessage) => {
+          set((state) => {
+            const session = state.sessions[sessionId];
+            if (!session) return state;
+
+            const updatedSession = {
+              ...session,
+              messages: [...session.messages, message],
+              updatedAt: Date.now(),
+            };
+            const newSessions = { ...state.sessions, [sessionId]: updatedSession };
+            const newSessionList = state.sessionList.map((s) =>
+              s.id === sessionId ? updatedSession : s
+            );
+
+            return { sessions: newSessions, sessionList: newSessionList };
+          });
+        },
+
         // --- Tool call actions ---
-        addToolCall: (sessionId, messageId, toolCall) => {
+        addToolCall: (sessionId: string, messageId: string, toolCall: Partial<ToolCallState>) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -461,7 +593,7 @@ export const useSessionStore = create<SessionStore>()(
           });
         },
 
-        updateToolCall: (sessionId, messageId, toolCallId, update) => {
+        updateToolCall: (sessionId: string, messageId: string, toolCallId: string, update: Partial<ToolCallState>) => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -487,7 +619,7 @@ export const useSessionStore = create<SessionStore>()(
         },
 
         // --- Streaming finalization ---
-        finalizeMessage: (sessionId, messageId, usage) => {
+        finalizeMessage: (sessionId: string, messageId: string, usage?: TokenUsage): FinalizeMessageResult => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;
@@ -510,7 +642,7 @@ export const useSessionStore = create<SessionStore>()(
           return { shouldStopStreaming: true };
         },
 
-        setMessageError: (sessionId, messageId, error) => {
+        setMessageError: (sessionId: string, messageId: string, error: string): FinalizeMessageResult => {
           set((state) => {
             const session = state.sessions[sessionId];
             if (!session) return state;

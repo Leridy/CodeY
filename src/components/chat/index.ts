@@ -37,3 +37,9 @@ export type { SessionItemProps } from './SessionItem';
 
 export { SessionSearch } from './SessionSearch';
 export type { SessionSearchProps } from './SessionSearch';
+
+export { BranchNavigator } from './BranchNavigator';
+export type { BranchNavigatorProps } from './BranchNavigator';
+
+export { BranchIndicator } from './BranchIndicator';
+export type { BranchIndicatorProps } from './BranchIndicator';

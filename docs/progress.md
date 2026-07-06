@@ -1,10 +1,10 @@
 # CodeY 进度跟踪
 
-> 最后更新：2026-07-05 (Phase 3.2.3 会话管理完成)
+> 最后更新：2026-07-05 (Phase 3.2 全部完成，包括实现、测试、代码审查)
 
 ## 当前任务
 
-- [ ] Phase 3.2.4 分支线程（BranchNavigator + 消息分支数据结构 + UI切换）
+- [ ] Phase 3.3 高级功能实现（命令面板 + Token统计 + 模型切换 + 数据导出）
 
 ## 待解决问题
 
@@ -85,6 +85,23 @@
 - [x] 集成到 ChatPanel（工具栏、侧边栏切换）
 - [x] 代码审查修复（2 个 HIGH 问题：竞态条件、格式优化）
 - [x] 单元测试编写（30 个测试，全部通过）
+
+### Phase 3.2.4 分支线程 ✅
+- [x] 实现 BranchNavigator 组件（Previous/Next切换、键盘导航）
+- [x] 实现 BranchIndicator 组件（分支位置显示）
+- [x] 实现分支数据结构（parentId、branchIndex、branchSelections）
+- [x] 实现分支操作（createBranch、switchBranch、filterBranchMessages）
+- [x] 集成到 MessageBubble（条件渲染分支导航）
+- [x] 代码审查修复（2 个 HIGH 问题：架构注释、测试重置）
+- [x] 单元测试编写（26 个测试，全部通过）
+
+### Phase 3.2 对话界面总结 ✅
+- [x] Phase 3.2.1: 基础对话（ChatPanel + MessageList + ChatInput + 流式桥接）
+- [x] Phase 3.2.2: 工具调用展示（ToolCallCard + ToolCallList）
+- [x] Phase 3.2.3: 会话管理（SessionSidebar + 会话CRUD + localStorage持久化）
+- [x] Phase 3.2.4: 分支线程（BranchNavigator + 分支数据结构 + UI切换）
+- [x] 总计 317 个测试，全部通过
+- [x] 代码审查修复 7 个 HIGH 问题
 
 ### Phase 2.5 Spec 创建 ✅
 - [x] 创建 design.md 设计文档
